@@ -10,7 +10,7 @@ pipeline {
         stage('npm build') {
             steps {
                 nodejs('nodejs') {
-                    sh 'npm install'
+                    sh 'npm install --unsafe-perm=true --allow-root'
                     sh 'npm run dist'
                 }
             }

@@ -7,6 +7,14 @@ pipeline {
     }
 
     stages {
+        stage('npm build') {
+            steps {
+                nodejs('nodejs') {
+                    sh 'npm run dist'
+                }
+            }
+        }
+        
         stage('docker build') {
             environment {
                 dockerRegistry = 'img.adp-custom.cn'

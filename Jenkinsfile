@@ -11,7 +11,7 @@ pipeline {
             steps {
                 nodejs('nodejs') {
                     sh 'npm install --unsafe-perm=true --allow-root'
-                    sh 'npm run deploy:buildt'
+                    sh 'npm run deploy:build'
                 }
             }
         }

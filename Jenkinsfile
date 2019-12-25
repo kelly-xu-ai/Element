@@ -10,6 +10,7 @@ pipeline {
         stage('npm build') {
             steps {
                 nodejs('nodejs') {
+                    sh 'npm install'
                     sh 'npm run dist'
                 }
             }

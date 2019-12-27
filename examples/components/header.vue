@@ -301,10 +301,49 @@
               :to="`/${ lang }/component`">{{ langConfig.components }}
             </router-link>
           </li>
+          <li 
+            class="nav-item nav-item-theme"
+          >
+            <router-link
+              active-class="active"
+              :to="`/${ lang }/theme`">{{ langConfig.theme }}
+            </router-link>
+          </li>
+          <li class="nav-item">
+            <router-link
+              active-class="active"
+              :to="`/${ lang }/resource`"
+              exact>{{ langConfig.resource }}
+            </router-link>
+          </li>
 
           <!-- gap -->
           <li class="nav-item" v-show="isComponentPage">
             <div class="nav-gap"></div>
+          </li>
+
+          <!-- 版本选择器 -->
+          <li class="nav-item nav-versions" v-show="isComponentPage">
+            <el-dropdown
+              trigger="click"
+              class="nav-dropdown"
+              :class="{ 'is-active': verDropdownVisible }">
+              <span>
+                {{ version }}
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu
+                slot="dropdown"
+                class="nav-dropdown-list"
+                @input="handleVerDropdownToggle">
+                <el-dropdown-item
+                  v-for="item in Object.keys(versions)"
+                  :key="item"
+                  @click.native="switchVersion(item)">
+                  {{ item }}
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </li>
 
           <!-- 语言选择器 -->

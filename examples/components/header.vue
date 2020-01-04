@@ -395,10 +395,7 @@
         verDropdownVisible: true,
         langDropdownVisible: true,
         langs: {
-          'zh-CN': '中文',
-          'en-US': 'English',
-          'es': 'Español',
-          'fr-FR': 'Français'
+          'zh-CN': '中文'
         }
       };
     },

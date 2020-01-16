@@ -85,6 +85,7 @@
     .nav-logo,
     .nav-logo-small {
       vertical-align: sub;
+      width: 100px;
     }
 
     .nav-logo-small {
@@ -273,11 +274,11 @@
           <!-- logo -->
           <slot>
             <img
-              src="../assets/images/element-logo.svg"
+              src="../assets/images/zhihulian.png"
               alt="element-logo"
               class="nav-logo">
             <img
-              src="../assets/images/element-logo-small.svg"
+              src="../assets/images/zhihulian.png"
               alt="element-logo"
               class="nav-logo-small">
           </slot>

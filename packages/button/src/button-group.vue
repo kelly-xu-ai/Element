@@ -1,5 +1,5 @@
 <template>
-  <div class="el-button-group">
+  <div class="el-button-group mytest">
     <slot></slot>
   </div>
 </template>

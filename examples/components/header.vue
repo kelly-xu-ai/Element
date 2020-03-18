@@ -270,7 +270,7 @@
   <div class="headerWrapper">
     <header class="header" ref="header">
       <div class="container">
-        <h1><router-link :to="`/${ lang }`">
+        <h1><router-link :to="`/${ lang }/component/installation`">
           <!-- logo -->
           <slot>
             <img
@@ -302,29 +302,6 @@
             <div class="nav-gap"></div>
           </li> -->
 
-          <!-- 语言选择器 -->
-          <li class="nav-item lang-item">
-            <el-dropdown
-              trigger="click"
-              class="nav-dropdown nav-lang"
-              :class="{ 'is-active': langDropdownVisible }">
-              <span>
-                {{ displayedLang }}
-                <i class="el-icon-arrow-down el-icon--right"></i>
-              </span>
-              <el-dropdown-menu
-                slot="dropdown"
-                class="nav-dropdown-list"
-                @input="handleLangDropdownToggle">
-                <el-dropdown-item
-                  v-for="(value, key) in langs"
-                  :key="key"
-                  @click.native="switchLang(key)">
-                  {{ value }}
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
-          </li>
         </ul>
       </div>
     </header>

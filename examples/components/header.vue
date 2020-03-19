@@ -270,7 +270,7 @@
   <div class="headerWrapper">
     <header class="header" ref="header">
       <div class="container">
-        <h1><router-link :to="`/${ lang }`">
+        <h1><router-link :to="`/${ lang }/component/installation`">
           <!-- logo -->
           <slot>
             <img
@@ -293,83 +293,15 @@
           <li class="nav-item">
             <router-link
               active-class="active"
-              :to="`/${ lang }/guide`">{{ langConfig.guide }}
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link
-              active-class="active"
               :to="`/${ lang }/component`">{{ langConfig.components }}
-            </router-link>
-          </li>
-          <li 
-            class="nav-item nav-item-theme"
-          >
-            <router-link
-              active-class="active"
-              :to="`/${ lang }/theme`">{{ langConfig.theme }}
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link
-              active-class="active"
-              :to="`/${ lang }/resource`"
-              exact>{{ langConfig.resource }}
             </router-link>
           </li>
 
           <!-- gap -->
-          <li class="nav-item" v-show="isComponentPage">
+          <!-- <li class="nav-item" v-show="isComponentPage">
             <div class="nav-gap"></div>
-          </li>
+          </li> -->
 
-          <!-- 版本选择器 -->
-          <li class="nav-item nav-versions" v-show="isComponentPage">
-            <el-dropdown
-              trigger="click"
-              class="nav-dropdown"
-              :class="{ 'is-active': verDropdownVisible }">
-              <span>
-                {{ version }}
-                <i class="el-icon-arrow-down el-icon--right"></i>
-              </span>
-              <el-dropdown-menu
-                slot="dropdown"
-                class="nav-dropdown-list"
-                @input="handleVerDropdownToggle">
-                <el-dropdown-item
-                  v-for="item in Object.keys(versions)"
-                  :key="item"
-                  @click.native="switchVersion(item)">
-                  {{ item }}
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
-          </li>
-
-          <!-- 语言选择器 -->
-          <li class="nav-item lang-item">
-            <el-dropdown
-              trigger="click"
-              class="nav-dropdown nav-lang"
-              :class="{ 'is-active': langDropdownVisible }">
-              <span>
-                {{ displayedLang }}
-                <i class="el-icon-arrow-down el-icon--right"></i>
-              </span>
-              <el-dropdown-menu
-                slot="dropdown"
-                class="nav-dropdown-list"
-                @input="handleLangDropdownToggle">
-                <el-dropdown-item
-                  v-for="(value, key) in langs"
-                  :key="key"
-                  @click.native="switchLang(key)">
-                  {{ value }}
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
-          </li>
         </ul>
       </div>
     </header>
@@ -436,7 +368,7 @@
     methods: {
       switchVersion(version) {
         if (version === this.version) return;
-        location.href = `${ location.origin }/${ this.versions[version] }/${ location.hash } `;
+        // location.href = `${ location.origin }/${ this.versions[version] }/${ location.hash } `;
       },
 
       switchLang(targetLang) {

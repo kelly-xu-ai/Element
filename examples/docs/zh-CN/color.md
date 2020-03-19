@@ -99,28 +99,6 @@
 智互联主要品牌颜色是值得信赖和成熟稳重的科技蓝色。
 
 <el-row :gutter="12">
- <el-col :span="12" :xs="{span: 12}">
-    <div class="demo-color-box"
-    style="background: #002237"
-    >Primary<div class="value">#002237</div>
-      <div 
-        class="bg-color-sub"
-      >
-        <div class="bg-custom-sub-item" 
-        style="background: #001521">
-        <div class="value">#001521</div>
-        </div>
-        <div class="bg-custom-sub-item" 
-        style="background: #025B90">
-        <div class="value">#025B90</div>
-        </div>
-        <div class="bg-custom-sub-item" 
-        style="background: #0176BA">
-        <div class="value">#0176BA</div>
-        </div>
-      </div>
-    </div>
-  </el-col>
   <el-col :span="12" :xs="{span: 12}">
     <div class="demo-color-box" :style="{ background: primary }">Brand Color
       <div class="value">#038EE3</div>

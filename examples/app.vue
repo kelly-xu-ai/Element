@@ -66,7 +66,7 @@
           if (this.lang !== 'zh-CN') return;
           this.$confirm('建议大陆用户访问部署在国内的站点，是否跳转？', '提示')
             .then(() => {
-              location.replace('https://element.eleme.cn');
+              location.replace('http://element.internal.adp-custom.cn/'); // 修改跳转到公司的内部网站
             })
             .catch(() => {
               localStorage.setItem('PREFER_GITHUB', 'true');
@@ -78,7 +78,8 @@
     mounted() {
       localize(this.lang);
       if (this.lang === 'zh-CN') {
-        this.suggestJump();
+        // 禁止页面跳转
+        // this.suggestJump();
       }
     }
   };

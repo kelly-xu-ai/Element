@@ -20,10 +20,10 @@
     'borderExtraLight': '$--border-color-extra-light'
   };
   const original = {
-    primary: '#409EFF',
-    success: '#67C23A',
-    warning: '#E6A23C',
-    danger: '#F56C6C',
+    primary: '#038EE3',
+    success: '#56964F',
+    warning: '#E89E25',
+    danger: '#DE0010',
     info: '#909399',
     white: '#FFFFFF',
     black: '#000000',
@@ -92,23 +92,53 @@
 
 ## Color 色彩
 
-Element 为了避免视觉传达差异，使用一套特定的调色板来规定颜色，为你所搭建的产品提供一致的外观视觉感受。
+为了避免视觉传达差异，使用一套特定的调色板来规定颜色，为你所搭建的产品提供一致的外观视觉感受。
 
 ### 主色
 
-Element 主要品牌颜色是鲜艳、友好的蓝色。
+智互联主要品牌颜色是值得信赖和成熟稳重的科技蓝色。
 
 <el-row :gutter="12">
-  <el-col :span="10" :xs="{span: 12}">
+ <el-col :span="12" :xs="{span: 12}">
+    <div class="demo-color-box"
+    style="background: #002237"
+    >Primary<div class="value">#002237</div>
+      <div 
+        class="bg-color-sub"
+      >
+        <div class="bg-custom-sub-item" 
+        style="background: #001521">
+        <div class="value">#001521</div>
+        </div>
+        <div class="bg-custom-sub-item" 
+        style="background: #025B90">
+        <div class="value">#025B90</div>
+        </div>
+        <div class="bg-custom-sub-item" 
+        style="background: #0176BA">
+        <div class="value">#0176BA</div>
+        </div>
+      </div>
+    </div>
+  </el-col>
+  <el-col :span="12" :xs="{span: 12}">
     <div class="demo-color-box" :style="{ background: primary }">Brand Color
-      <div class="value">#409EFF</div>
-      <div class="bg-color-sub" :style="{ background: tintColor(primary, 0.9) }">
-        <div
-          class="bg-blue-sub-item"
-          v-for="(item, key) in Array(8)"
-          :key="key"
-          :style="{ background: tintColor(primary, (key + 1) / 10) }"
-        ></div>
+      <div class="value">#038EE3</div>
+     <div 
+        class="bg-color-sub"
+      >
+        <div class="bg-custom-sub-item" 
+        style="background: #0171b6">
+        <div class="value">#0171b6</div>
+        </div>
+        <div class="bg-custom-sub-item" 
+        style="background: #43B7FF">
+        <div class="value">#43B7FF</div>
+        </div>
+        <div class="bg-custom-sub-item" 
+        style="background: #d5edfc">
+        <div class="value" style="color: #43B7FF">#d5edfc</div>
+        </div>
       </div>
     </div>
   </el-col>
@@ -122,16 +152,17 @@ Element 主要品牌颜色是鲜艳、友好的蓝色。
   <el-col :span="6" :xs="{span: 12}">
     <div class="demo-color-box"
     :style="{ background: success }"
-    >Success<div class="value">#67C23A</div>
+    >Success<div class="value">#56964F</div>
       <div 
         class="bg-color-sub"
       >
-        <div 
-          class="bg-success-sub-item" 
-          v-for="(item, key) in Array(2)"
-          :key="key"
-          :style="{ background: tintColor(success, (key + 8) / 10) }"
-            >
+        <div class="bg-custom-sub-item" 
+        style="background: #46BD39;width: 50%;">
+        <div class="value">#46BD39</div>
+        </div>
+         <div class="bg-custom-sub-item" 
+        style="background: #92D051;width: 50%;">
+        <div class="value">#92D051</div>
         </div>
       </div>
     </div>
@@ -139,16 +170,13 @@ Element 主要品牌颜色是鲜艳、友好的蓝色。
   <el-col :span="6" :xs="{span: 12}">
     <div class="demo-color-box"
     :style="{ background: warning }"
-    >Warning<div class="value">#E6A23C</div>
+    >Warning<div class="value">#E89E25</div>
       <div 
           class="bg-color-sub"
         >
-        <div 
-          class="bg-success-sub-item" 
-          v-for="(item, key) in Array(2)"
-          :key="key"
-          :style="{ background: tintColor(warning, (key + 8) / 10) }"
-            >
+       <div class="bg-custom-sub-item" 
+        style="background: #FFB02F;width: 100%;">
+        <div class="value">#FFB02F</div>
         </div>
       </div>
     </div>
@@ -156,16 +184,13 @@ Element 主要品牌颜色是鲜艳、友好的蓝色。
   <el-col :span="6" :xs="{span: 12}">
     <div class="demo-color-box"
     :style="{ background: danger }"
-    >Danger<div class="value">#F56C6C</div>
+    >Danger<div class="value">#DE0010</div>
       <div 
           class="bg-color-sub"
         >
-        <div 
-          class="bg-success-sub-item" 
-          v-for="(item, key) in Array(2)"
-          :key="key"
-          :style="{ background: tintColor(danger, (key + 8) / 10) }"
-            >
+       <div class="bg-custom-sub-item" 
+        style="background: #BA0210;width: 100%;">
+        <div class="value">#BA0210</div>
         </div>
       </div>
     </div>
@@ -183,6 +208,67 @@ Element 主要品牌颜色是鲜艳、友好的蓝色。
           :key="key"
           :style="{ background: tintColor(info, (key + 8) / 10) }"
             >
+        </div>
+      </div>
+    </div>
+  </el-col>
+</el-row>
+
+<el-row :gutter="12">
+  <el-col :span="6" :xs="{span: 12}">
+    <div class="demo-color-box"
+    style="background: #00aca7"
+    >Custom<div class="value">#00aca7</div>
+      <div 
+        class="bg-color-sub"
+      >
+        <div class="bg-custom-sub-item" 
+          style="background: #0bd4d3;width: 100%;">
+          <div class="value">#0bd4d3</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </el-col>
+  <el-col :span="6" :xs="{span: 12}">
+    <div class="demo-color-box"
+    style="background: #975FE4"
+    >Custom<div class="value">#975FE4</div>
+      <div 
+          class="bg-color-sub"
+        >
+        <div class="bg-custom-sub-item" 
+          style="background: #D2B5FA;width: 100%;">
+          <div class="value">#D2B5FA</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </el-col>
+   <el-col :span="6" :xs="{span: 12}">
+    <div class="demo-color-box"
+    style="background: #BAD87D"
+    >Custom<div class="value">#BAD87D</div>
+      <div 
+          class="bg-color-sub"
+        >
+         <div class="bg-custom-sub-item" 
+          style="background: #BAD87D;width: 100%;">
+          </div>
+        </div>
+      </div>
+    </div>
+  </el-col>
+  <el-col :span="6" :xs="{span: 12}">
+    <div class="demo-color-box"
+    style="background: #0280FF"
+    >Custom<div class="value">#0280FF</div>
+      <div 
+          class="bg-color-sub"
+        >
+         <div class="bg-custom-sub-item" 
+          style="background: #0280FF;width: 100%;">
+          </div>
         </div>
       </div>
     </div>

@@ -6,58 +6,27 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '3'))
     }
 
-    parameters { string(name: 'TAG_NAME', defaultValue: '', description: 'tag name') }
-
     stages {
-        stage('npm install') {
+        stage('npm build') {
             steps {
                 nodejs('nodejs') {
-                    sh 'npm install --unsafe-perm=true --alow-root'
-                }
-            }
-        }
-
-        stage('npm dist and demo') {
-            parallel {
-                stage ('dist') {
-                    steps {
-                        nodejs('nodejs') {
-                            sh 'npm run deploy:build'
-                        }
-                    }
-                }
-
-                stage ('demo') {
-                    steps {
-                        nodejs('nodejs') {
-                            sh 'npm run dist'
-                        }
-                    }
+                    sh 'npm install --unsafe-perm=true --allow-root'
+                    sh 'npm run deploy:build'
                 }
             }
         }
         
-        stage('deliver') {
+        stage('docker build') {
             environment {
                 dockerRegistry = 'img.adp-custom.cn'
                 harborCred = credentials('harbor')
                 imgName = "${dockerRegistry}/internal/${JOB_BASE_NAME}:${BUILD_NUMBER}"
             }
 
-            parallel {
-                stage('push lib') {
-                    steps {
-                        sh "git add lib && git commit -m ${TAG_NAME} || true && git push origin HEAD:refs/heads/master && git tag ${TAG_NAME} && git push origin ${TAG_NAME}"
-                    }
-                }
-
-                stage('docker build') {
-                    steps {
-                        sh "docker login ${dockerRegistry} -u ${harborCred_USR} -p ${harborCred_PSW}"
-                        sh "docker build -t ${imgName} ."
-                        sh "docker push ${imgName}"
-                    }
-                }
+            steps {
+                sh "docker login ${dockerRegistry} -u ${harborCred_USR} -p ${harborCred_PSW}"
+                sh "docker build -t ${imgName} ."
+                sh "docker push ${imgName}"
             }
         }
 

@@ -1,0 +1,27 @@
+pipeline {
+    agent any
+    options {
+        parallelsAlwaysFailFast()
+        timeout(time: 30, unit: 'MINUTES')
+        buildDiscarder(logRotator(numToKeepStr: '3'))
+    }
+
+    parameters { string(name: 'TAG_NAME', defaultValue: '', description: 'tag name') }
+
+    stages {
+        stage('npm dist') {
+            steps {
+                nodejs('nodejs') {
+                    sh 'npm install --unsafe-perm=true --alow-root'
+                    sh 'npm run dist'
+                }
+            }
+        }
+
+        stage('push lib') {
+            steps {
+                sh "git add -f lib && git commit -m ${TAG_NAME} || true && git push origin HEAD:refs/heads/master && git tag ${TAG_NAME} && git push origin ${TAG_NAME}"
+            }
+        }
+    }
+}

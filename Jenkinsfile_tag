@@ -20,7 +20,7 @@ pipeline {
 
         stage('push lib') {
             steps {
-                sh "git add lib && git commit -m ${TAG_NAME} || true && git push origin HEAD:refs/heads/master && git tag ${TAG_NAME} && git push origin ${TAG_NAME}"
+                sh "git add -f lib && git commit -m ${TAG_NAME} || true && git push origin HEAD:refs/heads/master && git tag ${TAG_NAME} && git push origin ${TAG_NAME}"
             }
         }
     }

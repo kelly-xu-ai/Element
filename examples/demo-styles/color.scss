@@ -70,3 +70,19 @@
 .demo-color-box-lite {
   color: #303133;
 }
+
+.bg-custom-sub-item {
+  width: calc(100%/3);
+  height: 100%;
+  display: inline-block;
+  & .value {
+    padding-top: 6px;
+    text-align: center;
+  }
+}
+.bg-custom-sub-item :first-child {
+  border-radius: 0 0 0 4px;
+}
+.bg-custom-sub-item :last-child {
+  border-radius: 0 0 4px 0;
+}

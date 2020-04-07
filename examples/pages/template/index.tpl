@@ -74,7 +74,7 @@
     &::before,
     &::after {
       display: table;
-      content: "";
+      content: '';
     }
     &::after {
       clear: both;
@@ -319,23 +319,23 @@
   </div>
 </template>
 <script>
-import throttle from "throttle-debounce/throttle";
+import throttle from 'throttle-debounce/throttle'
 
 export default {
   created() {
     this.throttledHandleScroll = throttle(10, true, index => {
-      this.handleScroll(index);
-    });
+      this.handleScroll(index)
+    })
   },
   methods: {
     handleScroll(index) {
-      const ele = this.$refs.indexMainImg;
-      const rect = ele.getBoundingClientRect();
-      const eleHeight = ele.clientHeight + 55;
-      let calHeight = (180 - rect.top) * 2;
-      if (calHeight < 0) calHeight = 0;
-      if (calHeight > eleHeight) calHeight = eleHeight;
-      this.mainImgOffset = calHeight;
+      const ele = this.$refs.indexMainImg
+      const rect = ele.getBoundingClientRect()
+      const eleHeight = ele.clientHeight + 55
+      let calHeight = (180 - rect.top) * 2
+      if (calHeight < 0) calHeight = 0
+      if (calHeight > eleHeight) calHeight = eleHeight
+      this.mainImgOffset = calHeight
     }
   },
   data() {
@@ -344,14 +344,14 @@ export default {
       mainImgOffset: 0,
       introBY: 0,
       introBX: 0
-    };
+    }
   },
   beforeDestroy() {
-    window.removeEventListener("scroll", this.throttledHandleScroll);
+    window.removeEventListener('scroll', this.throttledHandleScroll)
   },
   mounted() {
-    window.addEventListener("scroll", this.throttledHandleScroll);
-    if (localStorage.getItem("KNOW_THEME")) return;
+    window.addEventListener('scroll', this.throttledHandleScroll)
+    if (localStorage.getItem('KNOW_THEME')) return
   }
-};
+}
 </script>

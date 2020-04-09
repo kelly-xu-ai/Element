@@ -1,6 +1,6 @@
 <template>
   <button
-    class="el-button mytest"
+    class="el-button"
     @click="handleClick"
     :disabled="buttonDisabled || loading"
     :autofocus="autofocus"

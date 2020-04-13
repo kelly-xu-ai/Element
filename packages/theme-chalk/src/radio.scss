@@ -114,7 +114,9 @@
           border-color: $--radio-disabled-checked-input-border-color;
 
           &::after {
-            background-color: $--radio-disabled-checked-icon-color;
+            background-color: $--radio-disabled-checked-input-border-color;
+            border: $--border-base;
+            border-color: $--radio-disabled-checked-input-fill;
           }
         }
       }
@@ -161,8 +163,8 @@
     }
 
     &::after {
-      width: 4px;
-      height: 4px;
+      width: 6px;
+      height: 6px;
       border-radius: $--radio-input-border-radius;
       background-color: $--color-white;
       content: "";

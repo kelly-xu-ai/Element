@@ -278,7 +278,7 @@
               alt="element-logo"
               class="nav-logo">
             <img
-              src="../assets/images/LOGO.svg"
+              src="../assets/images/ZhiLink.svg"
               alt="element-logo"
               class="nav-logo-small">
           </slot>

@@ -65,87 +65,80 @@
 
 ## Typography 字体
 
-我们对字体进行统一规范，力求在各个操作系统下都有最佳展示效果。
+我们对字体进行统一规范，力求在各个操作系统下都有最佳展示效果。<font color="#038EE3">注:高保真设计稿只会以某一种系统默认字体来设计，但设计人员会标明不同系统所用到的字体顺序。</font>
 
-### 字体
-<div class="demo-term-box">
-<img src="../../assets/images/term-pingfang.png" alt="">
-<img src="../../assets/images/term-hiragino.png" alt="">
-<img src="../../assets/images/term-microsoft.png" alt="">
-<img src="../../assets/images/term-sf.png" alt="">
-<img src="../../assets/images/term-helvetica.png" alt="">
-<img src="../../assets/images/term-arial.png" alt="">
-</div>
+### 常用字体
+
+```css
+font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+  "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+```
+
+```css
+现6.0所用字体: Helvetica Neue, Helvetica, PingFang SC, "微软雅黑", Tahoma,
+  Arial, sans-serif;
+```
 
 ### 字号
+
+需系统默认字体有所不同,但字号大小大相径庭,因此以下统一标注字号.
 
 <table class="demo-typo-size">
   <tbody>
   <tr
     >
-      <td>层级</td>
-      <td>字体大小</td>
-      <td class="color-dark-light">举例</td>
+      <td>样式</td>
+      <td>字号</td>
+      <td class="color-dark-light">使用场景</td>
+  </tr>
+  <tr
+    :style="{ fontSize: font_size_extra_large }"
+    >
+      <td>标准字样式</td>
+      <td class="color-dark-light">{{font_size_extra_large}} Extra large</td>
+      <td class="demo-typo-desc">标题文字</td>
+    </tr>
+ <tr
+    :style="{ fontSize: font_size_large }"
+    >
+      <td>标准字样式</td>
+      <td class="color-dark-light">{{font_size_large}} large</td>
+      <td class="demo-typo-desc">用于LOGO标题，大标题，其它页面标题，图表、筛选条件内小标题文字</td>
+    </tr>
+ <tr
+    :style="{ fontSize: font_size_medium }"
+    >
+      <td>标准字样式</td>
+      <td class="color-dark-light">{{font_size_medium}} Medium 正常/加粗</td>
+      <td class="demo-typo-desc">用于重点标题，特殊按钮、重点字提示</td>
+    </tr>
+<tr
+    style="fontSize: 15px"
+    >
+    <td>标准字样式</td>
+    <td class="color-dark-light">15px Medium 正常/加粗</td>
+    <td class="demo-typo-desc">用于重点标题，特殊按钮、重点字提示</td>
+</tr>
+ <tr
+    :style="{ fontSize: font_size_base }"
+    >
+      <td>标准字样式</td>
+      <td class="color-dark-light">{{font_size_base}} Base 正常/加粗</td>
+      <td class="demo-typo-desc">用于列表标题，正文文体</td>
+    </tr>
+  <tr
+    :style="{ fontSize: font_size_small }"
+    >
+      <td>标准字样式</td>
+      <td class="color-dark-light">{{font_size_small}} Small 正常/加粗</td>
+      <td class="demo-typo-desc">重要字体、按钮、适用于大部分正文文字</td>
     </tr>
     <tr
     :style="{ fontSize: font_size_extra_small }"
     >
-      <td>辅助文字</td>
-      <td class="color-dark-light">{{font_size_extra_small}} Extra Small</td>
-      <td>用 Element 快速搭建页面</td>
-    </tr>
-    <tr
-    :style="{ fontSize: font_size_small }"
-    >
-      <td>正文（小）</td>
-      <td class="color-dark-light">{{font_size_small}} Small</td>
-      <td>用 Element 快速搭建页面</td>
-    </tr>
-    <tr
-    :style="{ fontSize: font_size_base }"
-    >
-      <td>正文</td>
-      <td class="color-dark-light">{{font_size_base}} Base</td>
-      <td>用 Element 快速搭建页面</td>
-    </tr>
-    <tr
-    :style="{ fontSize: font_size_medium }"
-    >
-      <td>小标题</td>
-      <td class="color-dark-light">{{font_size_medium}} Medium</td>
-      <td>用 Element 快速搭建页面</td>
-    </tr>
-    <tr
-    :style="{ fontSize: font_size_large }"
-    >
-      <td>标题</td>
-      <td class="color-dark-light">{{font_size_large}} large</td>
-      <td>用 Element 快速搭建页面</td>
-    </tr>
-    <tr
-    :style="{ fontSize: font_size_extra_large }"
-    >
-      <td>主标题</td>
-      <td class="color-dark-light">{{font_size_extra_large}} Extra large</td>
-      <td>用 Element 快速搭建页面</td>
+      <td>标准字样式</td>
+      <td class="color-dark-light">{{font_size_extra_small}} Extra Small 正常/加粗</td>
+      <td class="demo-typo-desc">适用于大部分正文字体及提示文字，不是太重要的文字</td>
     </tr>
   </tbody>
 </table>
-
-### 行高
-
-<div>
-<img class="lineH-left" src="~examples/assets/images/typography.png" />
-<ul class="lineH-right">
-<li>line-height:1 <span>无行高</span></li>
-<li>line-height:1.3 <span>紧凑</span></li>
-<li>line-height:1.5 <span>常规</span></li>
-<li>line-height:1.7 <span>宽松</span></li>
-</ul>
-</div>
-
-### Font-family 代码
-
-```css
-font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
-```

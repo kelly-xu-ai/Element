@@ -274,11 +274,11 @@
           <!-- logo -->
           <slot>
             <img
-              src="../assets/images/zhihulian.png"
+              src="../assets/images/ZhiLink.svg"
               alt="element-logo"
               class="nav-logo">
             <img
-              src="../assets/images/zhihulian.png"
+              src="../assets/images/LOGO.svg"
               alt="element-logo"
               class="nav-logo-small">
           </slot>

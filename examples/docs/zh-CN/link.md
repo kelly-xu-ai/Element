@@ -7,7 +7,7 @@
 :::demo
 ```html
 <div>
-  <el-link href="https://element.eleme.io" target="_blank">默认链接</el-link>
+  <el-link href="http://element-demo.internal.adp-custom.cn/" target="_blank">默认链接</el-link>
   <el-link type="primary">主要链接</el-link>
   <el-link type="success">成功链接</el-link>
   <el-link type="warning">警告链接</el-link>

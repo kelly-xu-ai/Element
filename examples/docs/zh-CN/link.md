@@ -51,6 +51,8 @@
 <div>
   <el-link icon="el-icon-edit">编辑</el-link>
   <el-link>查看<i class="el-icon-view el-icon--right"></i> </el-link>
+  <el-link>删除<i class="el-icon-delete el-icon--right"></i> </el-link>
+  <el-link icon="el-icon-download">点击下载</el-link>
 </div>
 ```
 :::

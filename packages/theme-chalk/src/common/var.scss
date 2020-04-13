@@ -16,7 +16,7 @@ $--color-transition-base: color .2s cubic-bezier(.645,.045,.355,1) !default;
 /* Color
 -------------------------- */
 /// color|1|Brand Color|0
-$--color-primary: #409EFF !default;
+$--color-primary: #038EE3 !default;
 /// color|1|Background Color|4
 $--color-white: #FFFFFF !default;
 /// color|1|Background Color|4
@@ -31,11 +31,11 @@ $--color-primary-light-7: mix($--color-white, $--color-primary, 70%) !default; /
 $--color-primary-light-8: mix($--color-white, $--color-primary, 80%) !default; /* d9ecff */
 $--color-primary-light-9: mix($--color-white, $--color-primary, 90%) !default; /* ecf5ff */
 /// color|1|Functional Color|1
-$--color-success: #67C23A !default;
+$--color-success: #92D051 !default;
 /// color|1|Functional Color|1
-$--color-warning: #E6A23C !default;
+$--color-warning: #E89E25 !default;
 /// color|1|Functional Color|1
-$--color-danger: #F56C6C !default;
+$--color-danger: #DE0010 !default;
 /// color|1|Functional Color|1
 $--color-info: #909399 !default;
 

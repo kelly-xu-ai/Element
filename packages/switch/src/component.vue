@@ -59,7 +59,7 @@
       },
       width: {
         type: Number,
-        default: 40
+        default: 36
       },
       activeIconClass: {
         type: String,

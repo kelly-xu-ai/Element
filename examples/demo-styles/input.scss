@@ -63,3 +63,23 @@
     margin-right: 15px;
   }
 }
+.demo-search-input.el-input {
+  width: 100%;
+  &.el-input--suffix .el-input__inner {
+    padding-right: 90px;
+  }
+}
+.demo-verification-input.el-input {
+  width: 400px;
+  .el-input__inner {
+    padding-top: 4px;
+    padding-bottom: 4px;
+    height: 48px;
+  }
+  .el-input__suffix {
+    top: 4px;
+  }
+  .el-input__prefix .el-input__icon {
+    line-height: 48px;
+  }
+}

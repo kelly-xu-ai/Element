@@ -225,12 +225,25 @@ export default {
     <el-button slot="append" icon="el-icon-search"></el-button>
   </el-input>
 </div>
+<div style="margin-top: 15px;">
+  <el-input class="demo-search-input" placeholder="请输入内容" v-model="input4">
+    <template slot="suffix">
+      <el-button
+        style="margin-right: -5px;"
+        type="primary"
+        icon="el-icon-search">搜索</el-button>
+    </template>
+  </el-input>
+</div>
 <style>
   .el-select .el-input {
     width: 130px;
   }
   .input-with-select .el-input-group__prepend {
     background-color: #fff;
+  }
+  .demo-search-input .el-input--suffix .el-input__inner {
+    padding-right: 90px;
   }
 </style>
 <script>
@@ -240,11 +253,112 @@ export default {
       input1: '',
       input2: '',
       input3: '',
+      input4: '',
       select: ''
     }
   }
 }
 </script>
+```
+:::
+
+### 发送验证码
+
+:::demo
+```html
+<div id="app">
+  <el-form>
+    <el-form-item :error="error">
+      <el-input
+        class="demo-verification-input"
+        placeholder="请输入手机号"
+        prefix-icon="el-icon-mobile-phone"
+        maxlength="11"
+        v-model="phone"
+        @blur="validate">
+        <template slot="suffix">
+          <el-button
+            type="primary"
+            @click="sendCode"
+            :loading="loading"
+            :disabled="disabled"
+            >{{text}}</el-button>
+        </template>
+      </el-input>
+    </el-form-item>
+  </el-form>
+</div>
+
+<script>
+
+export default {
+  name: 'App',
+  data () {
+    return {
+      phone: '',
+      error: '',
+      loading: false,
+      disabled: false,
+      text: '发送验证码',
+      countDown: 0
+    }
+  },
+  methods: {
+    validate () {
+      if (/^1[3456789]\d{9}$/.test(this.phone)) {
+        this.error = ''
+      } else {
+        this.error = '请输入正确手机号码！'
+      }
+    },
+    sendCode () {
+      if (this.loading) {
+        return
+      }
+      this.validate()
+      if (!this.error) {
+        this.loading = true
+        this.text = '正在发送...'
+        setTimeout(() => {
+          this.sended()
+        }, 1000)
+      }
+    },
+    sended () {
+      this.disabled = true
+      this.loading = false
+      this.countDown = 60
+      this.text = `重新发送(${this.countDown}s)`
+      const timer = setInterval(() => {
+        this.countDown = this.countDown - 1
+        this.text = `重新发送(${this.countDown < 10 ? '0' + this.countDown : this.countDown}s)`
+        if (this.countDown <= 0) {
+          clearInterval(timer)
+          this.text = '发送验证码'
+          this.disabled = false
+        }
+      }, 1000)
+    }
+  }
+}
+</script>
+
+<style>
+.demo-verification-input.el-input {
+  width: 400px;
+}
+.demo-verification-input.el-input .el-input__inner {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  height: 48px;
+}
+.demo-verification-input.el-input .el-input__suffix {
+  top: 4px;
+}
+.demo-verification-input.el-input .el-input__prefix .el-input__icon {
+  line-height: 48px;
+}
+</style>
 ```
 :::
 

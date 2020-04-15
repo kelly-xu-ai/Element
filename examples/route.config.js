@@ -1,5 +1,6 @@
 import navConfig from './nav.config';
-import langs from './i18n/route';
+import navMyConfig from './nav.my.config';
+// import langs from './i18n/route';
 
 const LOAD_MAP = {
   'zh-CN': name => {
@@ -20,9 +21,19 @@ const LOAD_DOCS_MAP = {
     'zh-CN');
   }
 };
+const LOAD_DOCS_MY_MAP = {
+  'zh-CN': path => {
+    return r => require.ensure([], () =>
+      r(require(`./docs-my/zh-CN${path}.md`)),
+    'zh-CN');
+  }
+}
 
 const loadDocs = function(lang, path) {
   return LOAD_DOCS_MAP[lang](path);
+};
+const loadDocsMy = function(lang, path) {
+  return LOAD_DOCS_MY_MAP[lang](path);
 };
 
 const registerRoute = (navConfig) => {
@@ -72,80 +83,135 @@ const registerRoute = (navConfig) => {
 
   return route;
 };
-
-let route = registerRoute(navConfig);
-
-const generateMiscRoutes = function(lang) {
-  let guideRoute = {
-    path: `/${ lang }/guide`, // 指南
-    redirect: `/${ lang }/guide/design`,
-    component: load(lang, 'guide'),
-    children: [{
-      path: 'design', // 设计原则
-      name: 'guide-design' + lang,
-      meta: { lang },
-      component: load(lang, 'design')
-    }, {
-      path: 'nav', // 导航
-      name: 'guide-nav' + lang,
-      meta: { lang },
-      component: load(lang, 'nav')
-    }]
-  };
-
-  let themeRoute = {
-    path: `/${ lang }/theme`,
-    component: load(lang, 'theme-nav'),
-    children: [
-      {
-        path: '/', // 主题管理
-        name: 'theme' + lang,
-        meta: { lang },
-        component: load(lang, 'theme')
+// myComponentsRoute
+const registerMyRoute = (navMyConfig) => {
+  let route = [];
+  Object.keys(navMyConfig).forEach((lang, index) => {
+    let navs = navMyConfig[lang];
+    route.push({
+      path: `/${ lang }/my-component`,
+      redirect: `/${ lang }/my-component/introduce`,
+      component: load(lang, 'my-component'),
+      children: []
+    });
+    navs.forEach(nav => {
+      if (nav.href) return;
+      if (nav.groups) {
+        nav.groups.forEach(group => {
+          group.list.forEach(nav => {
+            addRoute(nav, lang, index);
+          });
+        });
+      } else if (nav.children) {
+        nav.children.forEach(nav => {
+          addRoute(nav, lang, index);
+        });
+      } else {
+        addRoute(nav, lang, index);
+      }
+    });
+  });
+  function addRoute(page, lang, index) {
+    const component = page.path === '/changelog'
+      ? load(lang, 'changelog')
+      : loadDocsMy(lang, page.path);
+    let child = {
+      path: page.path.slice(1),
+      meta: {
+        title: page.title || page.name,
+        description: page.description,
+        lang
       },
-      {
-        path: 'preview', // 主题预览编辑
-        name: 'theme-preview-' + lang,
-        meta: { lang },
-        component: load(lang, 'theme-preview')
-      }]
-  };
+      name: 'my-component-' + lang + (page.title || page.name),
+      component: component.default || component
+    };
 
-  let resourceRoute = {
-    path: `/${ lang }/resource`, // 资源
-    meta: { lang },
-    name: 'resource' + lang,
-    component: load(lang, 'resource')
-  };
+    route[index].children.push(child);
+  }
 
-  let indexRoute = {
-    path: `/${ lang }`, // 首页
-    meta: { lang },
-    name: 'home' + lang,
-    redirect: `/${ lang }/component/installation`
-    // component: load(lang, 'index')
-  };
-
-  return [guideRoute, resourceRoute, themeRoute, indexRoute];
+  return route;
 };
 
-langs.forEach(lang => {
-  route = route.concat(generateMiscRoutes(lang.lang));
-});
+let route = registerRoute(navConfig);
+let myRoute = registerMyRoute(navMyConfig)
+
+// const generateMiscRoutes = function(lang) {
+//   let guideRoute = {
+//     path: `/${ lang }/guide`, // 指南
+//     redirect: `/${ lang }/guide/design`,
+//     component: load(lang, 'guide'),
+//     children: [{
+//       path: 'design', // 设计原则
+//       name: 'guide-design' + lang,
+//       meta: { lang },
+//       component: load(lang, 'design')
+//     }, {
+//       path: 'nav', // 导航
+//       name: 'guide-nav' + lang,
+//       meta: { lang },
+//       component: load(lang, 'nav')
+//     }]
+//   };
+
+//   let themeRoute = {
+//     path: `/${ lang }/theme`,
+//     component: load(lang, 'theme-nav'),
+//     children: [
+//       {
+//         path: '/', // 主题管理
+//         name: 'theme' + lang,
+//         meta: { lang },
+//         component: load(lang, 'theme')
+//       },
+//       {
+//         path: 'preview', // 主题预览编辑
+//         name: 'theme-preview-' + lang,
+//         meta: { lang },
+//         component: load(lang, 'theme-preview')
+//       }]
+//   };
+
+//   let resourceRoute = {
+//     path: `/${ lang }/resource`, // 资源
+//     meta: { lang },
+//     name: 'resource' + lang,
+//     component: load(lang, 'resource')
+//   };
+
+//   let indexRoute = {
+//     path: `/${ lang }`, // 首页
+//     meta: { lang },
+//     name: 'home' + lang,
+//     redirect: `/${ lang }/component/installation`
+//     // component: load(lang, 'index')
+//   };
+
+//   return [guideRoute, resourceRoute, themeRoute, indexRoute];
+// };
+
+// langs.forEach(lang => {
+//   route = route.concat(generateMiscRoutes(lang.lang));
+// });
 
 route.push({
   path: '/play',
   name: 'play',
   component: require('./play/index.vue')
 });
-let defaultPath = '/zh-CN';
+let defaultPath = '/zh-CN/component/installation';
 
-route = route.concat([{
-  path: '/',
-  redirect: defaultPath
-}, {
-  path: '*',
-  redirect: defaultPath
-}]);
+route = route.concat(
+  myRoute,
+  [
+    {
+      path: '/',
+      redirect: defaultPath
+    },
+    {
+      path: '*',
+      redirect: defaultPath
+    }
+  ]
+);
 
 export default route;

@@ -221,9 +221,6 @@
           padding: 0 5px;
         }
       }
-      .nav-theme-switch, .nav-algolia-search {
-        display: none;
-      }
     }
   }
 
@@ -290,10 +287,18 @@
           <li class="nav-item nav-algolia-search" v-show="isComponentPage">
             <algolia-search></algolia-search>
           </li>
+
           <li class="nav-item">
             <router-link
               active-class="active"
               :to="`/${ lang }/component`">{{ langConfig.components }}
+            </router-link>
+          </li>
+
+          <li class="nav-item">
+          <router-link
+              active-class="active"
+              :to="`/${ lang }/my-component/introduce`">业务组件
             </router-link>
           </li>
 
@@ -308,14 +313,9 @@
   </div>
 </template>
 <script>
-  import ThemePicker from './theme-picker.vue';
   import AlgoliaSearch from './search.vue';
   import compoLang from '../i18n/component.json';
   import Element from 'main/index.js';
-  import themeLoader from './theme/loader';
-  import { getTestEle } from './theme/loader/api.js';
-  import bus from '../bus';
-  import { ACTION_USER_CONFIG_UPDATE } from './theme/constant.js';
 
   const { version } = Element;
 
@@ -333,10 +333,7 @@
       };
     },
 
-    mixins: [themeLoader],
-
     components: {
-      ThemePicker,
       AlgoliaSearch
     },
 
@@ -353,17 +350,6 @@
       isComponentPage() {
         return /^component/.test(this.$route.name);
       }
-    },
-    mounted() {
-      getTestEle()
-        .then(() => {
-          this.$isEle = true;
-          ga('send', 'event', 'DocView', 'Ele', 'Inner');
-        })
-        .catch((err) => {
-          ga('send', 'event', 'DocView', 'Ele', 'Outer');
-          console.error(err);
-        });
     },
     methods: {
       switchVersion(version) {
@@ -384,32 +370,6 @@
       handleLangDropdownToggle(visible) {
         this.langDropdownVisible = visible;
       }
-    },
-
-    created() {
-      const xhr = new XMLHttpRequest();
-      xhr.onreadystatechange = _ => {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-          const versions = JSON.parse(xhr.responseText);
-          this.versions = Object.keys(versions).reduce((prev, next) => {
-            prev[next] = versions[next];
-            return prev;
-          }, {});
-        }
-      };
-      xhr.open('GET', '/versions.json');
-      xhr.send();
-      let primaryLast = '#409EFF';
-      bus.$on(ACTION_USER_CONFIG_UPDATE, (val) => {
-        let primaryColor = val.global['$--color-primary'];
-        if (!primaryColor) primaryColor = '#409EFF';
-        const base64svg = 'data:image/svg+xml;base64,';
-        const imgSet = document.querySelectorAll('h1 img');
-        imgSet.forEach((img) => {
-          img.src = `${base64svg}${window.btoa(window.atob(img.src.replace(base64svg, '')).replace(primaryLast, primaryColor))}`;
-        });
-        primaryLast = primaryColor;
-      });
     }
   };
 </script>

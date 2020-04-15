@@ -1,0 +1,28 @@
+{
+  "zh-CN": [
+    {
+      "name": "开发指南",
+      "children": [
+        {
+          "name": "介绍",
+          "path": "/introduce"
+        }
+      ]
+    },
+    {
+      "name": "扩展组件",
+      "children": [
+        {
+          "path": "/area-picker",
+          "name": "地区选择"
+        }
+      ]
+    },
+    {
+      "name": "业务组件",
+      "children": [
+
+      ]
+    }
+  ]
+}

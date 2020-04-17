@@ -75,8 +75,8 @@
 </template>
 
 <script>
-import areaData from './city_code.json'
-import provinceMap from './province.json'
+import areaData from 'main/config/city_code.json'
+import provinceMap from 'main/config/province.json'
 const codeMap = {}
 areaData.forEach(i => {
   codeMap[i.code] = i

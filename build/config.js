@@ -35,6 +35,7 @@ exports.externals = externals;
 exports.alias = {
   main: path.resolve(__dirname, '../src'),
   packages: path.resolve(__dirname, '../packages'),
+  'packages-my': path.resolve(__dirname, '../packages-my'),
   examples: path.resolve(__dirname, '../examples'),
   'element-ui': path.resolve(__dirname, '../')
 };

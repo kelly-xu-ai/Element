@@ -1,22 +1,22 @@
 <template>
-  <el-popover ref="popover" v-bind="$attrs" :disabled="disabled">
-    <div :title="labelValue" class="area-picker" slot="reference">
-      <el-input v-model="labelValue" :disabled="disabled" readonly></el-input>
+  <el-popover ref="popover" :disabled="disabled" :placement="placement">
+    <div :title="labelValue" class="el-area-picker" slot="reference">
+      <el-input v-model="labelValue" v-bind="$attrs" :disabled="disabled" readonly></el-input>
     </div>
     <div>
       <el-tabs
         v-model="areaLevel"
         :before-leave="beforeLeave">
         <el-tab-pane label="省份" name="province">
-          <div class="area-picker-province">
+          <div class="el-area-picker-province">
             <div
-              class="area-picker-province-type"
+              class="el-area-picker-province-type"
               v-for="(type, index) in ['A-G', 'H-K', 'L-S', 'T-Z']"
               :key="type">
-              <div class="area-picker-province-title">{{type}}</div>
-              <div class="area-picker-province-content">
+              <div class="el-area-picker-province-title">{{type}}</div>
+              <div class="el-area-picker-province-content">
                 <div
-                  class="area-picker-province-cell"
+                  class="el-area-picker-province-cell"
                   v-for="item in provinceData[index]"
                   :key="item.code">
                   <el-tag
@@ -34,9 +34,9 @@
           </div>
         </el-tab-pane>
         <el-tab-pane label="城市" name="city" v-if="showCity">
-          <div class="area-picker-city">
+          <div class="el-area-picker-city">
             <div
-              class="area-picker-cell"
+              class="el-area-picker-cell"
               v-for="item in cityData"
               :key="item.code">
               <el-tag
@@ -52,9 +52,9 @@
           </div>
         </el-tab-pane>
         <el-tab-pane label="区/县" name="district" v-if="showDistrict">
-          <div class="area-picker-district">
+          <div class="el-area-picker-district">
             <div
-              class="area-picker-cell"
+              class="el-area-picker-cell"
               v-for="item in districtData"
               :key="item.code">
               <el-tag
@@ -115,17 +115,16 @@ function getDistrictByCode(districts, code) {
 }
 export default {
   name: 'ElAreaPicker',
-  model: {
-    prop: 'value',
-    event: 'change'
-  },
   props: {
     value: {},
     level: {
       type: String,
       default: 'district'
     },
-    disabled: Boolean
+    disabled: Boolean,
+    placement: {
+      default: 'bottom-start'
+    }
   },
   data() {
     return {
@@ -150,12 +149,18 @@ export default {
   },
   watch: {
     level() {
-      this.unpdate()
+      this.update()
+    },
+    value(code) {
+      if (code) {
+        this.getDataByCode(this.value)
+      }
+      this.update()
     }
   },
   methods: {
-    unpdate() {
-      this.changeValue(this.level)
+    update() {
+      this.changeValue(this.level, true)
     },
     reset() {
       this.labelValue = ''
@@ -164,7 +169,7 @@ export default {
       this.city = {}
       this.district = {}
       this.areaLevel = 'province'
-      this.$emit('change', '')
+      this.$emit('input', '')
     },
     getDataByCode(code) {
       const province = getProvinceByCode(code)
@@ -173,11 +178,12 @@ export default {
       }
       let city
       if (this.showCity) {
-        this.chooseProvince(province)
+        this.changeProvince(province)
+        this.changeValue('province', true)
         city = getCityByCode(province.city, code)
       } else {
         this.province = { name: province.name, code: province.code }
-        this.changeValue('province')
+        this.changeValue('province', true)
         return
       }
 
@@ -186,17 +192,19 @@ export default {
       }
       let district
       if (this.showDistrict) {
-        this.chooseCity(city)
+        this.changeCity(city)
         district = getDistrictByCode(city.area, code)
+        this.changeValue('city', true)
       } else {
         this.city = { name: city.name, code: city.code }
-        this.changeValue('city')
+        this.changeValue('city', true)
         return
       }
       if (!district) {
         return this.reset()
       } else {
-        this.chooseDistrict(district)
+        this.changeDistrict(district)
+        this.changeValue('district', true)
       }
     },
     formaterProvince(data) {
@@ -215,20 +223,51 @@ export default {
         return false
       }
     },
-    changeValue(type) {
+    changeValue(type, outside) {
       const { code } = this[type]
       if (this.codeValue !== code) {
         this.labelValue = [this.province.name, this.city.name, this.district.name].filter(i => i).join('/')
         this.codeValue = code
         if (this.level === type) {
-          this.$emit('change', this.codeValue)
+          this.$emit('input', this.codeValue)
+          if (!outside) {
+            this.$nextTick(() => {
+              this.$emit(
+                'change',
+                this.codeValue,
+                {
+                  level: type,
+                  province: { ...this.province },
+                  city: { ...this.city },
+                  district: { ...this.district }
+                }
+              )
+            })
+          }
         }
       }
+      if (this.level !== type) {
+        this.$emit('input', '')
+      }
+    },
+    selectTab(type) {
+      this.changeValue(type)
+      this.$emit(
+        'tab',
+        this.codeValue,
+        {
+          level: type,
+          province: { ...this.province },
+          city: { ...this.city },
+          district: { ...this.district }
+        }
+      )
       if (this.level === type) {
         this.$refs.popover && this.$refs.popover.doClose()
       }
     },
-    chooseProvince(province) {
+    changeProvince(province) {
+      if (province.code === this.province.code) return
       this.province = { name: province.name, code: province.code }
       this.city = {}
       this.district = {}
@@ -236,20 +275,30 @@ export default {
       if (this.showCity) {
         this.areaLevel = 'city'
       }
-      this.changeValue('province')
     },
-    chooseCity(city) {
+    chooseProvince(province) {
+      this.changeProvince(province)
+      this.selectTab('province')
+    },
+    changeCity(city) {
+      if (city.code === this.city.code) return
       this.city = { name: city.name, code: city.code }
       this.district = {}
       this.districtData = Object.freeze(city.area)
       if (this.showDistrict) {
         this.areaLevel = 'district'
       }
-      this.changeValue('city')
+    },
+    chooseCity(city) {
+      this.changeCity(city)
+      this.selectTab('city')
+    },
+    changeDistrict(district) {
+      this.district = { name: district.name, code: district.code }
     },
     chooseDistrict(district) {
-      this.district = { name: district.name, code: district.code }
-      this.changeValue('district')
+      this.changeDistrict(district)
+      this.selectTab('district')
     }
   },
   created() {
@@ -260,47 +309,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-%picker-area {
-  width: 400px;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-}
-.area-picker {
-  display: inline-block;
-  &-province {
-    width: 400px;
-    &-type {
-      display: flex;
-    }
-    &-title {
-      width: 30px;
-      min-width: 30px;
-      text-align: right;
-      padding: 4px 0;
-      line-height: 26px;
-    }
-    &-content {
-      flex-grow: 1;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-    &-cell {
-      width: 20%;
-      text-align: center;
-      padding: 4px 0;
-    }
-  }
-  &-city, &-district {
-    @extend %picker-area
-  }
-  &-cell {
-    width: 25%;
-    padding: 4px 10px;
-    box-sizing: border-box;
-  }
-}
-</style>

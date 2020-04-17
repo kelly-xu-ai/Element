@@ -82,7 +82,6 @@ import CascaderPanel from '../packages/cascader-panel/index.js';
 import Avatar from '../packages/avatar/index.js';
 import Drawer from '../packages/drawer/index.js';
 import Popconfirm from '../packages/popconfirm/index.js';
-import AreaPicker from '../packages-my/area-picker/index.js';
 import locale from 'element-ui/src/locale';
 import CollapseTransition from 'element-ui/src/transitions/collapse-transition';
 
@@ -164,7 +163,6 @@ const components = [
   Avatar,
   Drawer,
   Popconfirm,
-  AreaPicker,
   CollapseTransition
 ];
 
@@ -286,6 +284,5 @@ export default {
   CascaderPanel,
   Avatar,
   Drawer,
-  Popconfirm,
-  AreaPicker
+  Popconfirm
 };

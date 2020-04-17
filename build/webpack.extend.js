@@ -2,18 +2,20 @@ const path = require('path');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
-const Components = require('../components.json');
-const ExtendComponents = require('../components-extend.json')
 const config = require('./config');
 
-const webpackConfig = {
+module.exports = {
   mode: 'production',
-  entry: { ...Components, ...ExtendComponents },
+  entry: {
+    app: ['./src/extend.js']
+  },
   output: {
     path: path.resolve(process.cwd(), './lib'),
     publicPath: '/dist/',
-    filename: '[name].js',
+    filename: 'element-ui.extend.js',
     chunkFilename: '[id].js',
+    libraryExport: 'default',
+    library: 'ELEMENT',
     libraryTarget: 'commonjs2'
   },
   resolve: {
@@ -25,7 +27,9 @@ const webpackConfig = {
   performance: {
     hints: false
   },
-  stats: 'none',
+  stats: {
+    children: false
+  },
   optimization: {
     minimize: false
   },
@@ -65,5 +69,3 @@ const webpackConfig = {
     new VueLoaderPlugin()
   ]
 };
-
-module.exports = webpackConfig;

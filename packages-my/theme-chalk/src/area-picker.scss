@@ -1,0 +1,41 @@
+@import "mixins/mixins";
+@import "common/var";
+
+@include b(area-picker) {
+  display: inline-block;
+  &-province {
+    width: 400px;
+    &-type {
+      display: flex;
+    }
+    &-title {
+      width: 30px;
+      min-width: 30px;
+      text-align: right;
+      padding: 4px 0;
+      line-height: 26px;
+    }
+    &-content {
+      flex-grow: 1;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    &-cell {
+      width: 20%;
+      text-align: center;
+      padding: 4px 0;
+    }
+  }
+  &-city, &-district {
+    width: 400px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  &-cell {
+    width: 25%;
+    padding: 4px 10px;
+    box-sizing: border-box;
+  }
+}

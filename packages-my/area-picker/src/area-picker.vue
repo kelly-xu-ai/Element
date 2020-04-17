@@ -20,7 +20,7 @@
                   v-for="item in provinceData[index]"
                   :key="item.code">
                   <el-tag
-                    style="cursor: pointer;border: none;"
+                    style="cursor: pointer;border: none;line-height: 24px;"
                     size="small"
                     :effect="province.code === item.code ? 'dark' : 'plain'"
                     :type="province.code === item.code ? '' : 'info'"
@@ -40,7 +40,7 @@
               v-for="item in cityData"
               :key="item.code">
               <el-tag
-                style="cursor: pointer;border: none;"
+                style="cursor: pointer;border: none;line-height: 24px;"
                 size="small"
                 :effect="city.code === item.code ? 'dark' : 'plain'"
                 :type="city.code === item.code ? '' : 'info'"
@@ -58,7 +58,7 @@
               v-for="item in districtData"
               :key="item.code">
               <el-tag
-                style="cursor: pointer;border: none;"
+                style="cursor: pointer;border: none;line-height: 24px;"
                 size="small"
                 :effect="district.code === item.code ? 'dark' : 'plain'"
                 :type="district.code === item.code ? '' : 'info'"
@@ -280,6 +280,7 @@ export default {
       min-width: 30px;
       text-align: right;
       padding: 4px 0;
+      line-height: 26px;
     }
     &-content {
       flex-grow: 1;

@@ -20,7 +20,7 @@
         return this.$route.path.split('/')[1] || 'zh-CN';
       },
       isComponent() {
-        return /^component-/.test(this.$route.name || '');
+        return /^(my-)?component-/.test(this.$route.name || '');
       }
     },
 

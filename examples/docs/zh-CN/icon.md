@@ -19,6 +19,16 @@
 ### 图标集合
 
 <ul class="icon-list">
+  <li v-for="name in $iconMy" :key="name">
+    <span>
+      <i :class="'my-icon-' + name"></i>
+      <span class="icon-name">{{'my-icon-' + name}}</span>
+    </span>
+  </li>
+</ul>
+
+
+<ul class="icon-list">
   <li v-for="name in $icon" :key="name">
     <span>
       <i :class="'el-icon-' + name"></i>

@@ -20,6 +20,7 @@ import './demo-styles/index.scss';
 import './assets/styles/common.css';
 import './assets/styles/fonts/style.css';
 import icon from './icon.json';
+import iconMy from './icon-my.json';
 
 Vue.use(Element);
 Vue.use(ElementExtend);
@@ -42,6 +43,7 @@ Vue.mixin({
 });
 
 Vue.prototype.$icon = icon; // Icon 列表页用
+Vue.prototype.$iconMy = iconMy; // Icon 列表页用
 
 const router = new VueRouter({
   mode: 'hash',

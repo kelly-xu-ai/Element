@@ -15,7 +15,6 @@ import ElementExtend from 'main/extend.js';
 
 import 'packages/theme-chalk/src/index.scss';
 import 'packages-my/theme-chalk/src/index.scss';
-// import '../packages-my/theme-chalk/src/index.scss';
 import './demo-styles/index.scss';
 import './assets/styles/common.css';
 import './assets/styles/fonts/style.css';

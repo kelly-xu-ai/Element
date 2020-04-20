@@ -2,7 +2,17 @@
 @import "common/var";
 
 @include b(area-picker) {
-  display: inline-block;
+  &.el-input {
+    display: inline-block;
+    cursor: pointer;
+    width: auto;
+  }
+  &__caret {
+    transform: rotate(180deg);
+    &.is-reverse {
+      transform: rotate(0);
+    }
+  }
   &-province {
     width: 400px;
     &-type {

@@ -236,6 +236,43 @@
 ```
 :::
 
+### 地域选择
+
+使用级联选择器来实现地域选择
+
+:::demo 使用级联选择器来实现地域选择
+```html
+<el-cascader :options="options"></el-cascader>
+
+<script>
+  const areaData = require('main/config/city_code.json')
+  function formateData(areaData) {
+    return areaData.map(area => {
+      const cell = {
+        value: area.code,
+        label: area.name
+      }
+      const children = area.area || area.city
+      if (children && children.length) {
+        return {
+          ...cell,
+          children: formateData(children)
+        }
+      }
+      return cell
+    })
+  }
+  export default {
+    data() {
+      return {
+        options: Object.freeze(formateData(areaData))
+      }    
+    }
+  };
+</script>
+```
+:::
+
 ### 禁用选项
 
 通过在数据源中设置 `disabled` 字段来声明该选项是禁用的

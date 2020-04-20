@@ -3,6 +3,13 @@
 
 @include b(area-picker) {
   display: inline-block;
+  cursor: pointer;
+  &__caret {
+    transform: rotate(180deg);
+    &.is-reverse {
+      transform: rotate(0);
+    }
+  }
   &-province {
     width: 400px;
     &-type {

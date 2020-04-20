@@ -1,7 +1,20 @@
 <template>
   <el-popover ref="popover" :disabled="disabled" :placement="placement">
     <div :title="labelValue" class="el-area-picker" slot="reference">
-      <el-input v-model="labelValue" v-bind="$attrs" :disabled="disabled" readonly></el-input>
+      <el-input
+        v-model="labelValue"
+        v-bind="$attrs"
+        :disabled="disabled"
+        readonly
+        @focus="handleFocus"
+        @blur="handleBlur"
+        @mouseenter.native="inputHovering = true"
+        @mouseleave.native="inputHovering = false">
+        <template slot="suffix">
+          <i v-show="!showClose" :class="['el-area-picker__caret', 'el-input__icon', 'el-icon-' + iconClass]"></i>
+          <i v-if="showClose" class="el-area-picker__caret el-input__icon el-icon-circle-close" @click="handleClearClick"></i>
+        </template>
+      </el-input>
     </div>
     <div>
       <el-tabs
@@ -124,7 +137,8 @@ export default {
     disabled: Boolean,
     placement: {
       default: 'bottom-start'
-    }
+    },
+    clearable: Boolean
   },
   data() {
     return {
@@ -136,7 +150,9 @@ export default {
       district: {},
       provinceData: [],
       cityData: [],
-      districtData: []
+      districtData: [],
+      inputHovering: false,
+      popover: {}
     }
   },
   computed: {
@@ -145,6 +161,17 @@ export default {
     },
     showDistrict() {
       return ['district'].includes(this.level)
+    },
+    showClose() {
+      let hasValue = this.value !== undefined && this.value !== null && this.value !== ''
+      let criteria = this.clearable &&
+        !this.disabled &&
+        this.inputHovering &&
+        hasValue
+      return criteria
+    },
+    iconClass() {
+      return this.popover && this.popover.showPopper ? 'arrow-up is-reverse' : 'arrow-up'
     }
   },
   watch: {
@@ -299,6 +326,28 @@ export default {
     chooseDistrict(district) {
       this.changeDistrict(district)
       this.selectTab('district')
+    },
+    handleFocus(event) {
+      if (this.disabled) {
+        return
+      }
+      this.$nextTick(() => {
+        setTimeout(() => {
+          if (this.$refs.popover && !this.$refs.popover.showPopper) {
+            this.$refs.popover && this.$refs.popover.doShow()
+            this.$emit('focus', event)
+          }
+        }, 200)
+      })
+    },
+    handleBlur(event) {
+      this.$emit('blur', event);
+    },
+    handleClearClick(event) {
+      event.stopPropagation();
+      this.reset()
+      this.$refs.popover && this.$refs.popover.doClose()
+      this.$emit('clear');
     }
   },
   created() {
@@ -306,6 +355,9 @@ export default {
     if (this.value) {
       this.getDataByCode(this.value)
     }
+  },
+  mounted() {
+    this.popover = this.$refs.popover || {}
   }
 }
 </script>

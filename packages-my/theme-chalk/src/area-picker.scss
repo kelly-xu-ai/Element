@@ -2,8 +2,11 @@
 @import "common/var";
 
 @include b(area-picker) {
-  display: inline-block;
-  cursor: pointer;
+  &.el-input {
+    display: inline-block;
+    cursor: pointer;
+    width: auto;
+  }
   &__caret {
     transform: rotate(180deg);
     &.is-reverse {

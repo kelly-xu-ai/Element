@@ -103,6 +103,10 @@
 | disabled | 是否禁用 | boolean | — | false |
 | clearable | 可清空 | boolean | — | false |
 | level | 地域级别 | string | province/city/district | district |
+| referenceClass | input框class | string/object/array | — | [] |
+| referenceStyle | input框style | string/object | — | {} |
+|  placement        |  出现位置  | string | top/top-start/top-end/bottom/bottom-start/bottom-end/left/left-start/left-end/right/right-start/right-end |  bottom-start |
+| 其他 | 参照el-input | — | — | — |
 
 ### Events
 | 事件名称 | 说明 | 回调参数 |

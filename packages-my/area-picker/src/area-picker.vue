@@ -1,21 +1,24 @@
 <template>
   <el-popover ref="popover" :disabled="disabled" :placement="placement">
-    <div :title="labelValue" class="el-area-picker" slot="reference">
-      <el-input
-        v-model="labelValue"
-        v-bind="$attrs"
-        :disabled="disabled"
-        readonly
-        @focus="handleFocus"
-        @blur="handleBlur"
-        @mouseenter.native="inputHovering = true"
-        @mouseleave.native="inputHovering = false">
-        <template slot="suffix">
-          <i v-show="!showClose" :class="['el-area-picker__caret', 'el-input__icon', 'el-icon-' + iconClass]"></i>
-          <i v-if="showClose" class="el-area-picker__caret el-input__icon el-icon-circle-close" @click="handleClearClick"></i>
-        </template>
-      </el-input>
-    </div>
+    <el-input
+      class="el-area-picker"
+      slot="reference"
+      v-model="labelValue"
+      v-bind="$attrs"
+      :title="labelValue"
+      :class="referenceClass"
+      :style="referenceStyle"
+      :disabled="disabled"
+      readonly
+      @focus="handleFocus"
+      @blur="handleBlur"
+      @mouseenter.native="inputHovering = true"
+      @mouseleave.native="inputHovering = false">
+      <template slot="suffix">
+        <i v-show="!showClose" :class="['el-area-picker__caret', 'el-input__icon', 'el-icon-' + iconClass]"></i>
+        <i v-if="showClose" class="el-area-picker__caret el-input__icon el-icon-circle-close" @click="handleClearClick"></i>
+      </template>
+    </el-input>
     <div>
       <el-tabs
         v-model="areaLevel"
@@ -138,7 +141,15 @@ export default {
     placement: {
       default: 'bottom-start'
     },
-    clearable: Boolean
+    clearable: Boolean,
+    referenceClass: {
+      type: null,
+      default: () => []
+    },
+    referenceStyle: {
+      type: null,
+      default: () => ({})
+    }
   },
   data() {
     return {

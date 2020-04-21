@@ -42,7 +42,7 @@
   </el-form-item>
   <el-form-item label="检测项目">
     <el-checkbox-group v-model="form.type">
-      <el-checkbox label="与ERP数据库链接检测" name="type"></el-checkbox>
+      <el-checkbox label="数据库链接检测" name="type"></el-checkbox>
       <el-checkbox label="与ERP服务接口检测" name="type"></el-checkbox>
       <el-checkbox label="用户资料检测" name="type"></el-checkbox>
       <el-checkbox label="货品档案资料检测" name="type"></el-checkbox>
@@ -234,7 +234,7 @@ W3C 标准中有如下[规定](https://www.w3.org/MarkUp/html-spec/html-spec_8.h
   </el-form-item>
   <el-form-item label="检测项目" prop="type">
     <el-checkbox-group v-model="ruleForm.type">
-      <el-checkbox label="与ERP数据库链接检测" name="type"></el-checkbox>
+      <el-checkbox label="数据库链接检测" name="type"></el-checkbox>
       <el-checkbox label="与ERP服务接口检测" name="type"></el-checkbox>
       <el-checkbox label="用户资料检测" name="type"></el-checkbox>
       <el-checkbox label="货品档案资料检测" name="type"></el-checkbox>
@@ -646,7 +646,7 @@ W3C 标准中有如下[规定](https://www.w3.org/MarkUp/html-spec/html-spec_8.h
   <el-form-item label="检测项目">
     <el-checkbox-group v-model="sizeForm.type">
       <el-checkbox-button
-        label="与ERP数据库链接检测"
+        label="数据库链接检测"
         name="type"
       ></el-checkbox-button>
       <el-checkbox-button

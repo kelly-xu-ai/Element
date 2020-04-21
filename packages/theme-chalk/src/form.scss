@@ -143,9 +143,10 @@
 
   @include when(error) {
     & .el-input__inner,
-    & .el-textarea__inner {
+    & .el-textarea__inner, & .el-range-input {
       &, &:focus {
         border-color: $--color-danger;
+        background-color: $--background-color-danger;
       }
     }
     & .el-input-group__append,

@@ -31,7 +31,8 @@
 }
 
 .time-select-item:hover {
-  background-color: $--background-color-base;
+  background-color: $--background-color-base-hover;
   font-weight: bold;
   cursor: pointer;
+  color: $--color-text-hover;
 }

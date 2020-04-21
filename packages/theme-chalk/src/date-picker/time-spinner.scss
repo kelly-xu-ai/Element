@@ -93,12 +93,13 @@
     color: $--color-text-regular;
 
     &:hover:not(.disabled):not(.active) {
-      background: $--background-color-base;
+      background: $--background-color-base-hover;
+      color: $--color-text-hover;
       cursor: pointer;
     }
 
     &.active:not(.disabled) {
-      color: $--color-text-primary;
+      color: $--color-text-hover;
       font-weight: bold;
     }
 

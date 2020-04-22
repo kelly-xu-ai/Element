@@ -104,12 +104,14 @@
 ```
 :::
 
-### Component Object on 覆盖 event
+### on中事件改写默认事件
 
-:::demo 编辑组件是用on来覆盖event事件。
+当输入数字以外的字符时不生效，且退回原来的值。
+
+:::demo 用on中的事件来限定输入。ps：当event，on，rules中事件同名时，触发事件顺序event>on>rules（目前rules不生效）。
 
 ```html
-<el-edit-table @change="changeHandle" :data="tableData" :column="column">
+<el-edit-table :data="tableData" :column="column">
   <template slot="remark" slot-scope="{ value, row, index }">
     <span style="color: red">备注：{{value}}</span>
   </template>
@@ -136,27 +138,21 @@
             prop: 'name'
           },
           {
-            label: 'remark',
+            label: '编辑时只能输入数字',
             prop: 'remark',
             component: {
               name: 'el-input',
               on: {
-                input({ row, prop }, $event) {
-                  row[prop] = $event
+                input: ({row, prop, index, oldValue }, $event) => {
+                  if (!/^[0-9]*$/.test($event)) {
+                    row[prop] = oldValue
+                  }
                 }
               }
             }
           }
         ]
       };
-    },
-    methods: {
-      changeHandle(code, { level, province, city, district }) {
-        console.log('change:', code, level, province, city, district)
-      },
-      tabHandle(code, { level, province, city, district }) {
-        console.log('tab:', code, level, province, city, district)
-      }
     }
   }
 </script>
@@ -187,12 +183,13 @@
 | slot | 插槽 | string | — | 作用域插槽slot-scope="{ index, value, row }" |
 | editable | 可编辑 | boolean | — | 默认是false，值为true时相当于component为el-input |
 | component | 编辑项定义 | string/object | — | — |
+| rules | 验证规则 | object/array | — | 参考el-form中的验证（暂时可能无效，后面完善） |
 | 其他 | 其他属性会自动映射到el-table-column上 | — | — | — |
 
 ### Component Object
 | 参数      | 说明          | 类型      | 可选值                           | 备注  |
 |---------- |-------------- |---------- |--------------------------------  |-------- |
 | name | 声明组件 | string/VueComponentOptions | — | — |
-| event | 双向绑定触发事件 | srting | — | 默认值input，会被on中的同名回调事件覆盖，需要自行处理双向绑定 |
-| on | 编辑组件触发事件回调 | array[function] | — | 需要注意this的指向问题，会覆盖event定义事件，不建议使用，如果需要监听编辑组件的修改可使用table中的change事件，判断参数中的prop, index即可判断出具体改变 |
+| event | 双向绑定触发事件 | srting | — | 默认值input，当event，on，rules中事件同名时目前触发顺序是event>on>rules |
+| on | 编辑组件触发事件回调 | object{function/array[function]} | — | 需要注意this的指向问题，不建议使用，如果需要监听编辑组件的修改可使用table中的change事件，判断参数中的prop, index即可判断出具体改变 |
 | 其他 | 其他属性会自动映射到组件的属性上 | — | — | — |

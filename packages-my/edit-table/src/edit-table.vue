@@ -60,6 +60,52 @@
 
 <script>
 import RowCell from './row-cell'
+function mergeEvents(...rest) {
+  const a = rest[0]
+  const b = rest[1]
+  rest.splice(0, 2)
+  if (!(a && b)) {
+    return a || {}
+  } else {
+    const copy = {}
+    Object.keys(a).forEach(key => {
+      if (key in b) {
+        const eventA = Array.isArray(a[key]) ? a[key] : [a[key]]
+        const eventB = Array.isArray(b[key]) ? b[key] : [b[key]]
+        copy[key] = [...eventA, ...eventB]
+      } else {
+        copy[key] = a[key]
+      }
+    })
+    Object.keys(b).forEach(key => {
+      if (!(key in copy)) {
+        copy[key] = b[key]
+      }
+    })
+    if (rest.length) {
+      return mergeEvents(copy, ...rest)
+    }
+    return copy
+  }
+}
+function getEvent(component) {
+  if (component && typeof component === 'object' && component.event) {
+    return component.event
+  }
+  return 'input'
+}
+function getOns(component, params) {
+  if (component && component.on && typeof component.on === 'object') {
+    const copy = {}
+    Object.keys(component.on).forEach(key => {
+      copy[key] = function(...$event) {
+        component.on[key](params, ...$event)
+      }
+    })
+    return copy
+  }
+  return {}
+}
 export default {
   name: 'ElEditTable',
   components: {
@@ -88,7 +134,7 @@ export default {
     copyBinds(bind) {
       const copy = {}
       Object.keys(bind).forEach(key => {
-        if (!['prop', 'label', 'render', 'slot', 'format', 'component', 'editable'].includes(key)) {
+        if (!['prop', 'label', 'render', 'slot', 'format', 'component', 'editable', 'rules'].includes(key)) {
           copy[key] = bind[key]
         }
       })
@@ -114,34 +160,20 @@ export default {
       }
       return {}
     },
-    getEvent(component) {
-      if (component && typeof component === 'object' && component.event) {
-        return component.event
-      }
-      return 'input'
-    },
-    getOns(component, params) {
-      if (component && component.on && typeof component.on === 'object') {
-        const copy = {}
-        Object.keys(component.on).forEach(key => {
-          copy[key] = function(...$event) {
-            component.on[key](params, ...$event)
-          }
-        })
-        return copy
-      }
+    getValidateEvents() {
       return {}
     },
     getModelEvent({ item, row, index, value}) {
-      const event = this.getEvent(item.component)
-      const ons = this.getOns(item.component, {row, prop: item.prop, index, oldValue: value})
-      return {
+      const event = getEvent(item.component)
+      const changeEvent = {
         [event]: $value => {
           row[item.prop] = $value
           this.$emit('change', {row, prop: item.prop, index, value: $value, oldValue: value})
-        },
-        ...ons
+        }
       }
+      const ons = getOns(item.component, {row, prop: item.prop, index, oldValue: value})
+      const validateEvents = this.getValidateEvents(item.rules)
+      return mergeEvents(changeEvent, ons, validateEvents)
     },
     editStart(index) {
       const row = this.data[index]

@@ -11,10 +11,24 @@
     },
     {
       "name": "扩展组件",
-      "children": [
+      "groups": [
         {
-          "path": "/area-picker",
-          "name": "地区选择"
+          "groupName": "form",
+          "list": [
+            {
+              "path": "/area-picker",
+              "title": "地区选择"
+            }
+          ]
+        },
+        {
+          "groupName": "data",
+          "list": [
+            {
+              "path": "/edit-table",
+              "title": "可编辑表格"
+            }
+          ]
         }
       ]
     },

@@ -1,6 +1,7 @@
 <template>
   <el-table
     v-bind="$attrs"
+    v-on="$listeners"
     :data="data"
     style="width: 100%">
     <el-table-column
@@ -105,7 +106,9 @@ export default {
       if (component && typeof component === 'object') {
         const copy = {}
         Object.keys(component).forEach(key => {
-          copy[key] = component[key]
+          if (!['event', 'on'].includes(key)) {
+            copy[key] = component[key]
+          }
         })
         return copy
       }
@@ -117,13 +120,27 @@ export default {
       }
       return 'input'
     },
+    getOns(component, params) {
+      if (component && component.on && typeof component.on === 'object') {
+        const copy = {}
+        Object.keys(component.on).forEach(key => {
+          copy[key] = function(...$event) {
+            component.on[key](params, ...$event)
+          }
+        })
+        return copy
+      }
+      return {}
+    },
     getModelEvent({ item, row, index, value}) {
       const event = this.getEvent(item.component)
+      const ons = this.getOns(item.component, {row, prop: item.prop, index, oldValue: value})
       return {
         [event]: $value => {
           row[item.prop] = $value
           this.$emit('change', {row, prop: item.prop, index, value: $value, oldValue: value})
-        }
+        },
+        ...ons
       }
     },
     editStart(index) {

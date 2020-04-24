@@ -12,9 +12,12 @@
       <template
         slot-scope="{ row, $index }">
         <component
-          v-if="editRows.includes(row) && (item.component || item.editable)"
+          v-if="editRows.includes(row) && getEditable(item, row, $index)"
           :is="getComponent(item.component)"
           :value="row[item.prop]"
+          :row="row"
+          :column="item"
+          :index="$index"
           v-bind="getComponentBind(item.component)"
           v-on="getModelEvent({item, row, index: $index, value: row[item.prop]})"/>
         <RowCell
@@ -60,6 +63,13 @@
 
 <script>
 import RowCell from './row-cell'
+function isEditable(item, row, index) {
+  if (!item.component) return false
+  const { editable = true } = item
+  if (typeof editable === 'boolean') return editable
+  if (typeof editable === 'function') return editable({ row, index })
+  return false
+}
 function mergeEvents(...rest) {
   const a = rest[0]
   const b = rest[1]
@@ -131,6 +141,9 @@ export default {
     }
   },
   methods: {
+    getEditable(item, row, index) {
+      return this.editable && isEditable(item, row, index)
+    },
     copyBinds(bind) {
       const copy = {}
       Object.keys(bind).forEach(key => {
@@ -152,7 +165,7 @@ export default {
       if (component && typeof component === 'object') {
         const copy = {}
         Object.keys(component).forEach(key => {
-          if (!['event', 'on'].includes(key)) {
+          if (!['event', 'on', 'row', 'column', 'index'].includes(key)) {
             copy[key] = component[key]
           }
         })

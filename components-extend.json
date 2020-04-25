@@ -1,4 +1,4 @@
 {
   "area-picker": "./packages-my/area-picker/index.js",
-  "edit-table": "./packages-my/edit-table/index.js"
+  "extend-table": "./packages-my/extend-table/index.js"
 }

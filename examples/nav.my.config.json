@@ -25,8 +25,8 @@
           "groupName": "data",
           "list": [
             {
-              "path": "/edit-table",
-              "title": "可编辑表格"
+              "path": "/extend-table",
+              "title": "扩展表格"
             }
           ]
         }

@@ -1,10 +1,8 @@
 <template>
   <div style="margin: 20px;">
-    <el-edit-table @change="changeHandle" :data="tableData" :column="column">
-      <template slot="remark" slot-scope="{ value, row, index }">
-        <span style="color: red">索引: {{index}}</span>
-        <span style="color: green">值：{{value}}</span>
-        <span style="color: yellow">行: {{row}}</span>
+    <el-edit-table :data="tableData" :column="column">
+      <template slot="remark" slot-scope="{ value, state, message }">
+        <span style="color: red">备注：{{value}} {{state}} {{message}}</span>
       </template>
     </el-edit-table>
   </div>
@@ -16,45 +14,40 @@
       return {
         tableData: [
           {
-            name: '1',
-            age: 10,
-            remark: '112313'
+            no: 1,
+            name: 'name',
+            remark: '444444444'
           },
           {
-            name: '2',
-            age: 13,
-            remark: '112313'
-          },
-          {
-            name: '6',
-            age: 18,
-            remark: '112313'
+            no: 2,
+            name: 'name2',
+            remark: '2222222'
           }
         ],
         column: [
           {
-            label: '姓名',
-            prop: 'name',
+            label: 'no',
+            prop: 'no'
           },
           {
-            label: '年龄',
-            prop: 'age',
-            render(h, { value }) {
-              return h('span', `${value}岁`)
-            }
+            label: 'name',
+            prop: 'name',
+            component: 'el-input',
+            rules: [
+              { required: true, message: '请输入活动名称name', trigger: 'blur' }
+            ]
           },
           {
             label: '备注',
             prop: 'remark',
-            slot: 'remark'
+            slot: 'remark',
+            component: 'el-input',
+            rules: [
+              { required: true, message: '请输入备注remark', trigger: 'blur' }
+            ]
           }
         ]
       };
-    },
-    methods: {
-      changeHandle(e) {
-        console.log(e)
-      }
     }
   };
 </script>

@@ -1,5 +1,7 @@
 <template>
   <el-table
+    class="el-extend-table"
+    ref="table"
     v-bind="$attrs"
     v-on="$listeners"
     :data="data"
@@ -8,9 +10,11 @@
       v-for="(item, columnIndex) in column"
       v-bind="copyBinds(item)"
       :key="columnIndex"
-      :label="item.label">
+      :label="item.label"
+      :prop="item.prop"
+      :rules="item.rules">
       <template
-        slot-scope="{ row, $index }">
+        slot-scope="{ row, $index, state, message }">
         <component
           v-if="editRows.includes(row) && getEditable(item, row, $index)"
           :is="getComponent(item.component)"
@@ -18,24 +22,32 @@
           :row="row"
           :column="item"
           :index="$index"
+          :state="state"
+          :message="message"
           v-bind="getComponentBind(item.component)"
-          v-on="getModelEvent({item, row, index: $index, value: row[item.prop]})"/>
+          v-on="getModelEvent({item, row, index: $index, value: row[item.prop], state, message})"/>
         <RowCell
           v-else-if="item.render"
           :render="item.render"
           :value="row[item.prop]"
           :index="$index"
-          :row="row"/>
+          :row="row"
+          :state="state"
+          :message="message"/>
         <slot
           v-else-if="item.slot"
           :name="item.slot"
           :value="row[item.prop]"
           :index="$index"
-          :row="row"/>
-        <span
-          v-else
-          style="margin-left: 10px">
-          {{ item.format ? item.format({index: $index, value: row[item.prop], row}) : row[item.prop] || '' }}
+          :row="row"
+          :state="state"
+          :message="message"/>
+        <span v-else>
+          {{
+            item.format
+              ? item.format({index: $index, value: row[item.prop], row, state, message})
+              : row[item.prop] || ''
+          }}
         </span>
       </template>
     </el-table-column>
@@ -63,6 +75,8 @@
 
 <script>
 import RowCell from './row-cell'
+import ElTable from './table/index'
+import ElTableColumn from './table/src/table-column'
 function isEditable(item, row, index) {
   if (!item.component) return false
   const { editable = true } = item
@@ -117,9 +131,11 @@ function getOns(component, params) {
   return {}
 }
 export default {
-  name: 'ElEditTable',
+  name: 'ElExtendTable',
   components: {
-    RowCell
+    RowCell,
+    ElTable,
+    ElTableColumn
   },
   props: {
     data: {
@@ -141,6 +157,21 @@ export default {
     }
   },
   methods: {
+    clearRowValidate(index, props) {
+      this.$refs.table.clearRowValidate(index, props)
+    },
+    clearValidate(props) {
+      this.$refs.table.clearValidate(props)
+    },
+    validate(callback) {
+      this.$refs.table.validate(callback)
+    },
+    validateRow(index, callback) {
+      this.$refs.table.validateRow(index, callback)
+    },
+    validateCell(index, props, callback) {
+      this.$refs.table.validateCell(index, props, callback)
+    },
     getEditable(item, row, index) {
       return this.editable && isEditable(item, row, index)
     },
@@ -165,7 +196,7 @@ export default {
       if (component && typeof component === 'object') {
         const copy = {}
         Object.keys(component).forEach(key => {
-          if (!['event', 'on', 'row', 'column', 'index'].includes(key)) {
+          if (!['event', 'on', 'row', 'column', 'index', 'state', 'message'].includes(key)) {
             copy[key] = component[key]
           }
         })
@@ -173,19 +204,31 @@ export default {
       }
       return {}
     },
-    getValidateEvents() {
-      return {}
+    getRules(rules = []) {
+      return rules.filter(rule => {
+        return rule.trigger && typeof rule.trigger === 'string'
+      })
     },
-    getModelEvent({ item, row, index, value}) {
+    getValidateEvents({ item, row, index, value}) {
+      const rules = this.getRules(item.rules)
+      const events = {}
+      rules.forEach(rule => {
+        events[rule.trigger] = () => {
+          this.validateCell(index, [item.prop], () => {})
+        }
+      })
+      return events
+    },
+    getModelEvent({ item, row, index, value, state, message }) {
       const event = getEvent(item.component)
       const changeEvent = {
         [event]: $value => {
           row[item.prop] = $value
-          this.$emit('change', {row, prop: item.prop, index, value: $value, oldValue: value})
+          this.$emit('change', {row, prop: item.prop, index, value: $value, oldValue: value, state, message})
         }
       }
       const ons = getOns(item.component, {row, prop: item.prop, index, oldValue: value})
-      const validateEvents = this.getValidateEvents(item.rules)
+      const validateEvents = this.getValidateEvents({ item, row, index, value})
       return mergeEvents(changeEvent, ons, validateEvents)
     },
     editStart(index) {

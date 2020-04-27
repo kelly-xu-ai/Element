@@ -146,12 +146,12 @@ table可以通过手动，悬浮，单机双击来触发编辑状态（默认单
 <script>
   const tableData = [
     {
-      name: 'test001',
+      name: '盖伦',
       phone: '13300000000',
       address: '江苏南京'
     },
     {
-      name: 'test007',
+      name: '亚索',
       phone: '13300000001',
       address: '安徽合肥'
     }
@@ -185,7 +185,6 @@ table可以通过手动，悬浮，单机双击来触发编辑状态（默认单
         return [
           ...this.column,
           {
-            prop: 'name',
             label: '操作',
             slot: 'manual'
           }

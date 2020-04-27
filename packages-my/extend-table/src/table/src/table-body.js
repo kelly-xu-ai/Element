@@ -329,10 +329,12 @@ export default {
     },
 
     handleMouseEnter: debounce(30, function(index) {
+      this.$emit('row-mouse-enter', index)
       this.store.commit('setHoverRow', index);
     }),
 
-    handleMouseLeave: debounce(30, function() {
+    handleMouseLeave: debounce(30, function(index) {
+      this.$emit('row-mouse-leave', index)
       this.store.commit('setHoverRow', null);
     }),
 
@@ -386,7 +388,7 @@ export default {
         on-click={ ($event) => this.handleClick($event, row) }
         on-contextmenu={ ($event) => this.handleContextMenu($event, row) }
         on-mouseenter={ _ => this.handleMouseEnter($index) }
-        on-mouseleave={ this.handleMouseLeave }>
+        on-mouseleave={ _ => this.handleMouseLeave($index) }>
         {
           columns.map((column, cellIndex) => {
             const { rowspan, colspan } = this.getSpan(row, column, $index, cellIndex);

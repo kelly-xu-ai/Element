@@ -106,6 +106,105 @@
 ```
 :::
 
+### Table编辑触发方式
+
+table可以通过手动，悬浮，单机双击来触发编辑状态（默认单击触发）。
+
+:::demo 用on中的事件来限定输入。ps：当event，on，rules中事件同名时，触发事件顺序event>on>rules（目前rules不生效）。
+
+```html
+<p>点击[click]（默认触发方式）</p>
+<el-extend-table :data="tableData" :column="column">
+</el-extend-table>
+<el-divider></el-divider>
+<p>双击[dblclick]</p>
+<el-extend-table trigger="dblclick" :data="tableData" :column="column">
+</el-extend-table>
+<el-divider></el-divider>
+<p>悬浮[hover]（使用悬浮时需要注意，类似与select需要展开的选择器需要加把popper-append-to-body设置为false）</p>
+<el-extend-table trigger="hover" :data="tableData" :column="column">
+</el-extend-table>
+<el-divider></el-divider>
+<p>手动[manual]</p>
+<el-extend-table
+  ref="manual-table"
+  trigger="manual"
+  :data="tableData"
+  :column="manualColumn">
+  <template slot="manual" slot-scope="{ row, index, isEdit }">
+    <el-button
+      v-if="!isEdit"
+      size="mini"
+      @click="editStart(index)">编辑</el-button>
+    <el-button
+      v-else
+      size="mini"
+      @click="editEnd(index)">取消</el-button>
+  </template>
+</el-extend-table>
+
+<script>
+  const tableData = [
+    {
+      name: 'test001',
+      phone: '13300000000',
+      address: '江苏南京'
+    },
+    {
+      name: 'test007',
+      phone: '13300000001',
+      address: '安徽合肥'
+    }
+  ]
+  const column = [
+    {
+      label: '姓名',
+      prop: 'name',
+      editor: 'el-input'
+    },
+    {
+      label: '联系方式',
+      prop: 'phone',
+      editor: 'el-input'
+    },
+    {
+      label: '地址',
+      prop: 'address',
+      editor: 'el-input'
+    }
+  ]
+  export default {
+    data() {
+      return {
+        tableData,
+        column,
+      };
+    },
+    computed: {
+      manualColumn() {
+        return [
+          ...this.column,
+          {
+            prop: 'name',
+            label: '操作',
+            slot: 'manual'
+          }
+        ]
+      }
+    },
+    methods: {
+      editStart(index) {
+        this.$refs['manual-table'].editStart(index)
+      },
+      editEnd(index) {
+        this.$refs['manual-table'].editEnd(index)
+      }
+    }
+  }
+</script>
+```
+:::
+
 ### Table中表单联动
 
 读取行数据，设置编辑状态，动态修改值等。
@@ -394,7 +493,7 @@
 ```
 :::
 
-### Table表中动态编辑框
+### Table中动态编辑框
 
 可根据不同条件动态的生成编辑框。
 
@@ -582,6 +681,7 @@
 | data | 表单数据 | array | — | — |
 | column | 表单列定义 | array | — | — |
 | editable | 可编辑 | boolean | — | true |
+| trigger | 触发编辑方式 | string | click/dblclick/hover/manual | click |
 | 其他 | 参照el-table | — | — | 参照el-table |
 
 ### Table Events
@@ -606,7 +706,7 @@
 | label | 列标题 | srting | — | — |
 | format | 格式化数据 | function | — | 参数{ index, value, row, state, message } |
 | render | render函数 | function | — | 参数h, { index, value, row, state, message } |
-| slot | 插槽 | string | — | 作用域插槽slot-scope="{ index, value, row, state, message }" |
+| slot | 插槽 | string | — | 作用域插槽slot-scope="{ index, value, row, state, message, isEdit }" |
 | editable | 可编辑 | boolean/() => boolean | — | 当不存在editor时，不生效。存在editor时，默认值是true。当为function时会传入参数{ row, index } |
 | editor | 编辑项定义 | string/object/function | — | 当editor是function时，可继续返回一个新的editor，且新editor也可以是一个function |
 | rules | 验证规则 | object/array | — | 参考el-form中的验证 |

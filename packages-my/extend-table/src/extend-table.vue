@@ -1,9 +1,14 @@
 <template>
   <el-table
     class="el-extend-table"
+    :class="classes"
     ref="table"
     v-bind="$attrs"
     v-on="$listeners"
+    @row-mouse-enter="rowMouseEnter"
+    @row-mouse-leave="rowMouseLeave"
+    @cell-click="cellClick"
+    @cell-dblclick="cellDblclick"
     :data="data"
     style="width: 100%">
     <el-table-column
@@ -41,7 +46,8 @@
           :index="$index"
           :row="row"
           :state="state"
-          :message="message"/>
+          :message="message"
+          :isEdit="editRows.includes(row)"/>
         <span v-else>
           {{
             item.format
@@ -51,7 +57,7 @@
         </span>
       </template>
     </el-table-column>
-    <el-table-column
+    <!-- <el-table-column
       label="操作">
       <template slot-scope="{ row, $index }">
         <slot
@@ -69,7 +75,7 @@
             @click="editEnd($index)">完成</el-button>
         </slot>
       </template>
-    </el-table-column>
+    </el-table-column> -->
   </el-table>
 </template>
 
@@ -149,11 +155,25 @@ export default {
     editable: {
       type: Boolean,
       default: true
+    },
+    trigger: {
+      type: String,
+      validator: function(value) {
+        return ['manual', 'hover', 'click', 'dblclick'].indexOf(value) !== -1
+      },
+      default: 'click'
     }
   },
   data() {
     return {
       editRows: []
+    }
+  },
+  computed: {
+    classes() {
+      return [
+        `el-extend-table-edit-${this.trigger}`
+      ]
     }
   },
   methods: {
@@ -237,14 +257,50 @@ export default {
       return mergeEvents(changeEvent, ons, validateEvents)
     },
     editStart(index) {
+      if (!this.editable) return
       const row = this.data[index]
       if (row && !this.editRows.includes(row)) {
         this.editRows.push(row)
       }
     },
     editEnd(index) {
+      if (!this.editable) return
       const row = this.data[index]
       this.editRows.splice(this.editRows.indexOf(row), 1)
+    },
+    rowMouseEnter(index) {
+      if (this.trigger === 'hover') {
+        this.editStart(index)
+      }
+    },
+    rowMouseLeave(index) {
+      if (this.trigger === 'hover') {
+        this.editEnd(index)
+      }
+    },
+    clickTrigger(trigger, row, column, cell, event) {
+      if (this.trigger !== trigger) return
+      const contant = cell.querySelector('.el-form-item') || {}
+      const nodes = contant.childNodes || []
+      let isSelf
+      nodes.forEach(node => {
+        if (node.contains(event.target)) {
+          isSelf = true
+        }
+      })
+      if (isSelf && this.editRows.includes(row)) return
+      if (this.editRows.includes(row)) {
+        this.editRows.splice(this.editRows.indexOf(row), 1)
+      } else {
+        this.editRows = []
+        this.editRows.push(row)
+      }
+    },
+    cellClick(...rest) {
+      this.clickTrigger('click', ...rest)
+    },
+    cellDblclick(...rest) {
+      this.clickTrigger('dblclick', ...rest)
     }
   }
 }

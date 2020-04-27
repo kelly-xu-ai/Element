@@ -44,7 +44,9 @@
         :highlight="highlightCurrentRow"
         :style="{
            width: bodyWidth
-        }">
+        }"
+        @row-mouse-enter="$emit('row-mouse-enter', $event)"
+        @row-mouse-leave="$emit('row-mouse-leave', $event)">
       </table-body>
       <div
         v-if="!data || data.length === 0"

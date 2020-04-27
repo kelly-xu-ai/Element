@@ -17,14 +17,14 @@
         slot-scope="{ row, $index, state, message }">
         <component
           v-if="editRows.includes(row) && getEditable(item, row, $index)"
-          :is="getComponent(item.component)"
+          :is="getComponent(item.editor, { row, $index, state, message })"
           :value="row[item.prop]"
           :row="row"
           :column="item"
           :index="$index"
           :state="state"
           :message="message"
-          v-bind="getComponentBind(item.component)"
+          v-bind="getComponentBind(item.editor, { row, $index, state, message })"
           v-on="getModelEvent({item, row, index: $index, value: row[item.prop], state, message})"/>
         <RowCell
           v-else-if="item.render"
@@ -46,7 +46,7 @@
           {{
             item.format
               ? item.format({index: $index, value: row[item.prop], row, state, message})
-              : row[item.prop] || ''
+              : row[item.prop] === undefined ? '' : row[item.prop]
           }}
         </span>
       </template>
@@ -78,7 +78,7 @@ import RowCell from './row-cell'
 import ElTable from './table/index'
 import ElTableColumn from './table/src/table-column'
 function isEditable(item, row, index) {
-  if (!item.component) return false
+  if (!item.editor) return false
   const { editable = true } = item
   if (typeof editable === 'boolean') return editable
   if (typeof editable === 'function') return editable({ row, index })
@@ -112,18 +112,18 @@ function mergeEvents(...rest) {
     return copy
   }
 }
-function getEvent(component) {
-  if (component && typeof component === 'object' && component.event) {
-    return component.event
+function getEvent(editor) {
+  if (editor && typeof editor === 'object' && editor.event) {
+    return editor.event
   }
   return 'input'
 }
-function getOns(component, params) {
-  if (component && component.on && typeof component.on === 'object') {
+function getOns(editor, params) {
+  if (editor && editor.on && typeof editor.on === 'object') {
     const copy = {}
-    Object.keys(component.on).forEach(key => {
+    Object.keys(editor.on).forEach(key => {
       copy[key] = function(...$event) {
-        component.on[key](params, ...$event)
+        editor.on[key](params, ...$event)
       }
     })
     return copy
@@ -178,26 +178,31 @@ export default {
     copyBinds(bind) {
       const copy = {}
       Object.keys(bind).forEach(key => {
-        if (!['prop', 'label', 'render', 'slot', 'format', 'component', 'editable', 'rules'].includes(key)) {
+        if (!['prop', 'label', 'render', 'slot', 'format', 'editor', 'editable', 'rules'].includes(key)) {
           copy[key] = bind[key]
         }
       })
       return copy
     },
-    getComponent(component = 'el-input') {
-      if (typeof component === 'string') {
-        return component
-      } else if (component && typeof component === 'object') {
-        return component.name || 'el-input'
+    getComponent(editor = 'el-input', { row, $index: index, state, message }) {
+      if (typeof editor === 'string') {
+        return editor
+      } else if (editor && typeof editor === 'object') {
+        return editor.component || 'el-input'
+      } else if (editor && typeof editor === 'function') {
+        return this.getComponent(editor({ row, index, state, message }), { row, $index: index, state, message })
       }
       return 'el-input'
     },
-    getComponentBind(component) {
-      if (component && typeof component === 'object') {
+    getComponentBind(editor, { row, $index: index, state, message }) {
+      if (typeof editor === 'function') {
+        editor = editor({ row, index, state, message })
+      }
+      if (editor && typeof editor === 'object') {
         const copy = {}
-        Object.keys(component).forEach(key => {
-          if (!['event', 'on', 'row', 'column', 'index', 'state', 'message'].includes(key)) {
-            copy[key] = component[key]
+        Object.keys(editor).forEach(key => {
+          if (!['component', 'event', 'on', 'row', 'column', 'index', 'state', 'message'].includes(key)) {
+            copy[key] = editor[key]
           }
         })
         return copy
@@ -220,14 +225,14 @@ export default {
       return events
     },
     getModelEvent({ item, row, index, value, state, message }) {
-      const event = getEvent(item.component)
+      const event = getEvent(item.editor)
       const changeEvent = {
         [event]: $value => {
           row[item.prop] = $value
           this.$emit('change', {row, prop: item.prop, index, value: $value, oldValue: value, state, message})
         }
       }
-      const ons = getOns(item.component, {row, prop: item.prop, index, oldValue: value})
+      const ons = getOns(item.editor, {row, prop: item.prop, index, oldValue: value})
       const validateEvents = this.getValidateEvents({ item, row, index, value})
       return mergeEvents(changeEvent, ons, validateEvents)
     },

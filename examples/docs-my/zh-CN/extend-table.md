@@ -6,7 +6,7 @@
 
 表格的编辑和展示。
 
-:::demo 使用`prop`，`format`，`render`，`slot`来确定表格的展示方式，用component来定义表格编辑方式。
+:::demo 使用`prop`，`format`，`render`，`slot`来确定表格的展示方式，用editor来定义表格编辑方式。
 
 ```html
 <el-extend-table @change="changeHandle" :data="tableData" :column="column">
@@ -44,7 +44,7 @@
           {
             label: '姓名',
             prop: 'name',
-            component: 'el-input',
+            editor: 'el-input',
             editable: false
           },
           {
@@ -54,7 +54,7 @@
               return  `${value}岁`
             },
             width: '200',
-            component: 'el-input-number'
+            editor: 'el-input-number'
           },
           {
             label: '性别',
@@ -63,8 +63,8 @@
               const gMap =[{ icon: 'el-icon-male', label: '男' }, { icon: 'el-icon-female', label: '女'}]
               return h('span', {class: gMap[value].icon}, [gMap[value].label])
             },
-            component: {
-              name: {
+            editor: {
+              component: {
                 props: ['value'],
                 render(h) {
                   return h(
@@ -88,7 +88,7 @@
             label: '备注',
             prop: 'remark',
             slot: 'remark',
-            component: {
+            editor: {
               name: 'el-input',
               type: 'textarea'
             }
@@ -160,8 +160,8 @@
               ][value] || []
               return h('span', { class: [cell[0] ? cell[0] : ''] }, cell[1])
             },
-            component:{
-              name: {
+            editor:{
+              component: {
                 props: ['value', 'row'],
                 render(h) {
                   return h(
@@ -200,8 +200,8 @@
             format({value}) {
               return `${value}h`
             },
-            component: {
-              name: {
+            editor: {
+              component: {
                 props: ['value', 'row'],
                 watch: {
                   'row.method': function(value) {
@@ -232,7 +232,7 @@
             format({value, row}) {
               return row.method === 1 ? '——' : `${value}￥`
             },
-            component: 'el-input-number',
+            editor: 'el-input-number',
             width: 200,
             editable({row}) {
               return row.method !== 1
@@ -241,8 +241,8 @@
           {
             label: '说明',
             prop: 'remark',
-            component: {
-              name: 'el-input'
+            editor: {
+              component: 'el-input'
             },
             editable({row}) {
               return row.method === 4
@@ -258,9 +258,9 @@
 
 ### Table中表单验证
 
-当输入数字以外的字符时不生效，且退回原来的值。
+通过rules定义验证规则，暴露state, message返回验证结果。
 
-:::demo 用on中的事件来限定输入。ps：当event，on，rules中事件同名时，触发事件顺序event>on>rules（目前rules不生效）。
+:::demo rules的具体用法可参照el-form组件。
 
 ```html
 <el-extend-table :data="tableData" :column="column">
@@ -343,8 +343,8 @@
             label: '姓名',
             prop: 'name',
             slot: 'name',
-            component: {
-              name: {
+            editor: {
+              component: {
                 props: ['value', 'state', 'message'],
                 render: validateRender
               }
@@ -358,8 +358,8 @@
             label: '联系方式',
             prop: 'phone',
             slot: 'phone',
-            component: {
-              name: {
+            editor: {
+              component: {
                 props: ['value', 'state', 'message'],
                 render: validateRender
               }
@@ -381,9 +381,136 @@
           {
             label: '地址',
             prop: 'address',
-            component: {
-              name: 'el-input',
+            editor: {
+              component: 'el-input',
               type: 'textarea'
+            }
+          }
+        ]
+      };
+    }
+  }
+</script>
+```
+:::
+
+### Table表中动态编辑框
+
+可根据不同条件动态的生成编辑框。
+
+:::demo 可查询条件{ row, index, state, message }。
+
+```html
+<el-extend-table :data="tableData" :column="column">
+  <template slot="remark" slot-scope="{ value, row, index }">
+    <span style="color: red">备注：{{value}}</span>
+  </template>
+</el-extend-table>
+
+<script>
+  export default {
+    data() {
+      return {
+        tableData: [
+          {
+            name: 'test001',
+            method: 1,
+            cost: 1000
+          },
+          {
+            name: 'test007',
+            method: 2,
+            cost: 1000
+          },
+          {
+            name: 'test009',
+            method: 3,
+            cost: 10000
+          }
+        ],
+        column: [
+          {
+            label: '用户',
+            prop: 'name'
+          },
+          {
+            label: '付费方式',
+            prop: 'method',
+            format({ value }) {
+              return ['', '按量付费', '按月付费', '按年付费'][value] || ''
+            },
+            editor: {
+              component: {
+                props: ['value', 'row'],
+                render(h) {
+                  return h(
+                    'el-select',
+                    {
+                      props: {
+                        value: this.value
+                      },
+                      on: {
+                        input: value => {
+                          this.row.cost = [0, 0, 1000, 10000][value]
+                          this.$emit('input', value)
+                        }
+                      }
+                    },
+                    [
+                      h('el-option', {props: {label: '按量付费', value: 1}}),
+                      h('el-option', {props: {label: '按月付费', value: 2}}),
+                      h('el-option', {props: {label: '按年付费', value: 3}})
+                    ]
+                  )
+                }
+              },
+              placeholder: '请选择付费方式'
+            }
+          },
+          {
+            label: '付费金额',
+            prop: 'cost',
+            format({ row, value }) {
+              if (row.method === 2) {
+                return `${value}$/月`
+              } else if (row.method === 3) {
+                return `${value}$/年`
+              } else {
+                return `${value}$`
+              }
+            },
+            editor({ row }) {
+              if (row.method === 1) {
+                return 'el-input-number'
+              } else {
+                return {
+                  component: {
+                    props: ['value', 'row'],
+                    render(h) {
+                      const opMap = [
+                        [], [],
+                        [['1000/月', 1000], ['2000/月', 2000], ['3000/月', 3000]],
+                        [['10000/年', 10000], ['20000/年', 20000], ['30000/年', 30000]]
+                      ]
+                      const option = opMap[this.row.method]
+                      return h(
+                        'el-select',
+                        {
+                          props: {
+                            value: this.value
+                          },
+                          on: {
+                            input: value => { this.$emit('input', value) }
+                          }
+                        },
+                        option.map(i => {
+                          return h('el-option', {props: {label: i[0], value: i[1]}})
+                        })
+                      )
+                    }
+                  }
+                }
+              }
             }
           }
         ]
@@ -430,8 +557,8 @@
           {
             label: '编辑时只能输入数字',
             prop: 'remark',
-            component: {
-              name: 'el-input',
+            editor: {
+              component: 'el-input',
               on: {
                 input: ({row, prop, index, oldValue }, $event) => {
                   if (!/^[0-9]*$/.test($event)) {
@@ -468,9 +595,9 @@
 |---------- |-------- |---------- |
 | validate | 对整个表格进行校验的方法，参数为一个回调函数。该回调函数会在校验结束后被调用，并传入两个参数：是否校验成功和未通过校验的字段 | Function(callback: Function(boolean, array)) |
 | validateRow | 对整个表格一行进行校验的方法，参数为行索引和一个回调函数。该回调函数会在校验结束后被调用，并传入两个参数：是否校验成功和未通过校验的字段 | Function(index: number, callback: Function(boolean, objetc)) |
-| validateCell | 对部分表格字段进行校验的方法，参数为行索引、列props和一个回调函数。 | Function(index: number, props: array | string, callback: Function(errorMessage: string)) |
-| clearValidate | 移除表格项的校验结果。传入待移除的表格项的 prop 属性或者 prop 组成的数组，如不传则移除整个表单的校验结果 | Function(props: array | string) |
-| clearRowValidate | 移除表格项一行的校验结果。传入待移除的行索引和表格项的 prop 属性或者 prop 组成的数组，如不传则移除整行的校验结果 | Function(index: number, props: array | string) |
+| validateCell | 对部分表格字段进行校验的方法，参数为行索引、列props和一个回调函数。 | Function(index: number, props: array \| string, callback: Function(errorMessage: string)) |
+| clearValidate | 移除表格项的校验结果。传入待移除的表格项的 prop 属性或者 prop 组成的数组，如不传则移除整个表单的校验结果 | Function(props: array \| string) |
+| clearRowValidate | 移除表格项一行的校验结果。传入待移除的行索引和表格项的 prop 属性或者 prop 组成的数组，如不传则移除整行的校验结果 | Function(index: number, props: array \| string) |
 
 ### Column Item
 | 参数      | 说明          | 类型      | 可选值                           | 备注  |
@@ -480,15 +607,15 @@
 | format | 格式化数据 | function | — | 参数{ index, value, row, state, message } |
 | render | render函数 | function | — | 参数h, { index, value, row, state, message } |
 | slot | 插槽 | string | — | 作用域插槽slot-scope="{ index, value, row, state, message }" |
-| editable | 可编辑 | boolean/() => boolean | — | 当不存在component时，不生效。存在component时，默认值是true。当为function时会传入参数{ row, index } |
-| component | 编辑项定义 | string/object | — | — |
+| editable | 可编辑 | boolean/() => boolean | — | 当不存在editor时，不生效。存在editor时，默认值是true。当为function时会传入参数{ row, index } |
+| editor | 编辑项定义 | string/object/function | — | 当editor是function时，可继续返回一个新的editor，且新editor也可以是一个function |
 | rules | 验证规则 | object/array | — | 参考el-form中的验证 |
 | 其他 | 其他属性会自动映射到el-table-column上 | — | — | — |
 
-### Component Object
+### Editor Object
 | 参数      | 说明          | 类型      | 可选值                           | 备注  |
 |---------- |-------------- |---------- |--------------------------------  |-------- |
-| name | 声明组件 | string/VueComponentOptions | — | — |
+| component | 声明组件 | string/VueComponentOptions | — | — |
 | event | 双向绑定触发事件 | srting | — | 默认值input，当event，on，rules中事件同名时目前触发顺序是event>on>rules |
 | on | 编辑组件触发事件回调 | object{function/array[function]} | — | 需要注意this的指向问题，不建议使用，如果需要监听编辑组件的修改可使用table中的change事件，判断参数中的prop, index即可判断出具体改变 |
 | 其他 | 其他属性会自动映射到组件的属性上 | — | — | 所有组件props上都会额外被传入row, column, index |

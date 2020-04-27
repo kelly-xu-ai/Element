@@ -164,7 +164,10 @@
   action="#"
   list-type="picture-card"
   :auto-upload="false">
-    <i slot="default" class="el-icon-plus"></i>
+    <div style="display: flex; flex-direction: column; justify-content: center;height: 100%;">
+      <i class="el-icon-circle-plus" style="color: #038EE3;"></i>
+      <span style="line-height: 40px;">上传证书</span>
+    </div>
     <div slot="file" slot-scope="{file}">
       <img
         class="el-upload-list__item-thumbnail"

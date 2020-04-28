@@ -110,7 +110,7 @@
 
 table可以通过手动，悬浮，单机双击来触发编辑状态（默认单击触发）。
 
-:::demo 用on中的事件来限定输入。ps：当event，on，rules中事件同名时，触发事件顺序event>on>rules（目前rules不生效）。
+:::demo 设置trigger属性来控制编辑的触发方式。
 
 ```html
 <p>点击[click]（默认触发方式）</p>
@@ -348,6 +348,81 @@ table可以通过手动，悬浮，单机双击来触发编辑状态（默认单
           }
         ]
       };
+    }
+  }
+</script>
+```
+:::
+
+### Table中自动添加和删除一行数据
+
+:::demo 通过设置autoAdd来自动添加一行数据。
+
+```html
+<p>设置autoAdd为添加的默认数据</p>
+<el-extend-table :data="tableData" :column="column" :auto-add="autoAdd">
+</el-extend-table>
+<el-divider></el-divider>
+<p>设置autoChange为false动态添加不同的数据</p>
+<el-extend-table
+  :data="tableData"
+  :column="column"
+  :autoAdd="true"
+  :auto-change="false"
+  @add-row="addRow"
+  @remove-row="removeRow">
+</el-extend-table>
+<script>
+  const tableData = [
+    {
+      name: '盖伦',
+      phone: '13300000000',
+      address: '江苏南京'
+    },
+    {
+      name: '亚索',
+      phone: '13300000001',
+      address: '安徽合肥'
+    }
+  ]
+  const column = [
+    {
+      label: '姓名',
+      prop: 'name',
+      editor: 'el-input'
+    },
+    {
+      label: '联系方式',
+      prop: 'phone',
+      editor: 'el-input'
+    },
+    {
+      label: '地址',
+      prop: 'address',
+      editor: 'el-input'
+    }
+  ]
+  export default {
+    data() {
+      return {
+        tableData,
+        column,
+        autoAdd: {
+          name: 'new',
+          phone: '',
+          address: ''
+        }
+      };
+    },
+    methods: {
+      addRow(index) {
+        const cell = this.tableData[index]
+        const copy = { ...cell, name: cell.name + '-copy' }
+        this.tableData.splice(index + 1, 0, copy)
+      },
+      removeRow(index) {
+        this.tableData.splice(index, 1)
+      }
     }
   }
 </script>
@@ -681,6 +756,8 @@ table可以通过手动，悬浮，单机双击来触发编辑状态（默认单
 | column | 表单列定义 | array | — | — |
 | editable | 可编辑 | boolean | — | true |
 | trigger | 触发编辑方式 | string | click/dblclick/hover/manual | click |
+| autoAdd | 添加行数据的默认值 | object | — | — |
+| autoChange | 设置添加行时，是否自动添加 | boolean | — | true |
 | 其他 | 参照el-table | — | — | 参照el-table |
 
 ### Table Events

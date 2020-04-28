@@ -11,6 +11,15 @@
     @cell-dblclick="cellDblclick"
     :data="data"
     style="width: 100%">
+    <el-table-column v-if="autoAdd" label="#" width="60" align="center">
+      <template slot-scope="{ row, $index }">
+        <add-cell
+          :index="$index"
+          :pageInfo="pageInfo"
+          @remove-row="removeRow"
+          @add-row="addRow"/>
+      </template>
+    </el-table-column>
     <el-table-column
       v-for="(item, columnIndex) in column"
       v-bind="copyBinds(item)"
@@ -81,8 +90,11 @@
 
 <script>
 import RowCell from './row-cell'
+import AddCell from './add-cell'
 import ElTable from './table/index'
 import ElTableColumn from './table/src/table-column'
+import { deepCopy, typeOf } from 'element-ui/src/utils/extend'
+
 function isEditable(item, row, index) {
   if (!item.editor) return false
   const { editable = true } = item
@@ -136,10 +148,27 @@ function getOns(editor, params) {
   }
   return {}
 }
+function getAddData(column, autoAdd = {}) {
+  const o = {}
+  column.forEach(item => {
+    if (item.prop) {
+      o[item.prop] = ''
+    }
+  })
+  const copy = deepCopy(autoAdd)
+  if (copy && typeOf(copy) === 'object') {
+    return {
+      ...o,
+      ...copy
+    }
+  }
+  return o
+}
 export default {
   name: 'ElExtendTable',
   components: {
     RowCell,
+    AddCell,
     ElTable,
     ElTableColumn
   },
@@ -162,6 +191,18 @@ export default {
         return ['manual', 'hover', 'click', 'dblclick'].indexOf(value) !== -1
       },
       default: 'click'
+    },
+    pageInfo: {
+      type: Object,
+      default: () => ({
+        currentPage: 1,
+        pageSizes: 0
+      })
+    },
+    autoAdd: {},
+    autoChange: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -301,6 +342,18 @@ export default {
     },
     cellDblclick(...rest) {
       this.clickTrigger('dblclick', ...rest)
+    },
+    removeRow(index) {
+      if (this.autoChange) {
+        this.data.splice(index, 1)
+      }
+      this.$emit('remove-row', index)
+    },
+    addRow(index) {
+      if (this.autoChange) {
+        this.data.splice(index + 1, 0, getAddData(this.column, this.autoAdd))
+      }
+      this.$emit('add-row', index)
     }
   }
 }

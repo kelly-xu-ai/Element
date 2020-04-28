@@ -16,4 +16,27 @@
   & .el-form-item {
     margin-bottom: 0;
   }
+  &--add-cell {
+    .el-extend-table--add-cell-box {
+      display: none;
+    }
+    &:hover {
+      & .el-extend-table--add-cell-index {
+        display: none;
+      }
+      & .el-extend-table--add-cell-box {
+        display: inline-block;
+      }
+    }
+    i {
+      font-size: 16px;
+      cursor: pointer;
+    }
+    i.el-extend-table--add-cell-remove {
+      color: #F56C6C;
+    }
+    i.el-extend-table--add-cell-plus {
+      color: #409EFF;
+    }
+  }
 }

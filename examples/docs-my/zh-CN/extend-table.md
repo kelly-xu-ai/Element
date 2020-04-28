@@ -758,12 +758,14 @@ table可以通过手动，悬浮，单机双击来触发编辑状态（默认单
 | trigger | 触发编辑方式 | string | click/dblclick/hover/manual | click |
 | autoAdd | 添加行数据的默认值 | object | — | — |
 | autoChange | 设置添加行时，是否自动添加 | boolean | — | true |
-| 其他 | 参照el-table | — | — | 参照el-table |
+| 其他 | 参照el-table | 参照el-table | 参照el-table | 参照el-table |
 
 ### Table Events
 | 事件名称 | 说明 | 回调参数 |
 |---------- |-------- |---------- |
 | change | 编辑值发生改变时触发 | { row, prop, index, value, oldValue, state, message } |
+| add-row | 添加一行时触发 | index |
+| remove-row | 删除一行时触发 | index |
 | 其他 | 参照el-table | 参照el-table |
 
 ### Table Methods
@@ -784,7 +786,7 @@ table可以通过手动，悬浮，单机双击来触发编辑状态（默认单
 | render | render函数 | function | — | 参数h, { index, value, row, state, message } |
 | slot | 插槽 | string | — | 作用域插槽slot-scope="{ index, value, row, state, message, isEdit }" |
 | editable | 可编辑 | boolean/() => boolean | — | 当不存在editor时，不生效。存在editor时，默认值是true。当为function时会传入参数{ row, index } |
-| editor | 编辑项定义 | string/object/function | — | 当editor是function时，可继续返回一个新的editor，且新editor也可以是一个function |
+| editor | 编辑项定义 | string/object/function | — | 当editor是function时，可返回一个新的editor，且新editor也可以是一个function |
 | rules | 验证规则 | object/array | — | 参考el-form中的验证 |
 | 其他 | 其他属性会自动映射到el-table-column上 | — | — | — |
 
@@ -794,4 +796,4 @@ table可以通过手动，悬浮，单机双击来触发编辑状态（默认单
 | component | 声明组件 | string/VueComponentOptions | — | — |
 | event | 双向绑定触发事件 | srting | — | 默认值input，当event，on，rules中事件同名时目前触发顺序是event>on>rules |
 | on | 编辑组件触发事件回调 | object{function/array[function]} | — | 需要注意this的指向问题，不建议使用，如果需要监听编辑组件的修改可使用table中的change事件，判断参数中的prop, index即可判断出具体改变 |
-| 其他 | 其他属性会自动映射到组件的属性上 | — | — | 所有组件props上都会额外被传入row, column, index |
+| 其他 | 其他属性会自动映射到组件的属性上 | — | — | 所有组件props上都会额外被传入row, column, index, state, message |

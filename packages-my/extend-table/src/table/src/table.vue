@@ -26,7 +26,10 @@
         :default-sort="defaultSort"
         :style="{
           width: layout.bodyWidth ? layout.bodyWidth + 'px' : ''
-        }">
+        }"
+        :is-draggable="columnDraggable"
+        :columnList="column"
+        @change-column-list="$emit('change-column-list', $event)">
       </table-header>
     </div>
     <div
@@ -45,6 +48,8 @@
         :style="{
            width: bodyWidth
         }"
+        :is-draggable="rowDraggable"
+        @change-data="$emit('change-data', $event)"
         @row-mouse-enter="$emit('row-mouse-enter', $event)"
         @row-mouse-leave="$emit('row-mouse-leave', $event)">
       </table-body>
@@ -247,6 +252,12 @@
           return [];
         }
       },
+      column: {
+        type: Array,
+        default: () => []
+      },
+      columnDraggable: Boolean,
+      rowDraggable: Boolean,
 
       size: String,
 

@@ -10,6 +10,11 @@
     @cell-click="cellClick"
     @cell-dblclick="cellDblclick"
     :data="data"
+    :column="column"
+    :column-draggable="columnDraggable"
+    :row-draggable="rowDraggable"
+    @change-column-list="changeColumnList"
+    @change-data="changeData"
     style="width: 100%">
     <el-table-column v-if="autoAdd" label="#" width="60" align="center">
       <template slot-scope="{ row, $index }">
@@ -66,25 +71,7 @@
         </span>
       </template>
     </el-table-column>
-    <!-- <el-table-column
-      label="操作">
-      <template slot-scope="{ row, $index }">
-        <slot
-          name="eidt"
-          :index="$index"
-          :row="row"
-          :is-edit="editRows.includes(row)">
-          <el-button
-            v-if="!editRows.includes(row)"
-            size="mini"
-            @click="editStart($index)">编辑</el-button>
-          <el-button
-            v-else
-            size="mini"
-            @click="editEnd($index)">完成</el-button>
-        </slot>
-      </template>
-    </el-table-column> -->
+    <slot/>
   </el-table>
 </template>
 
@@ -172,6 +159,9 @@ export default {
     ElTable,
     ElTableColumn
   },
+  model: {
+    prop: 'data'
+  },
   props: {
     data: {
       type: Array,
@@ -203,7 +193,9 @@ export default {
     autoChange: {
       type: Boolean,
       default: true
-    }
+    },
+    columnDraggable: Boolean,
+    rowDraggable: Boolean
   },
   data() {
     return {
@@ -354,6 +346,12 @@ export default {
         this.data.splice(index + 1, 0, getAddData(this.column, this.autoAdd))
       }
       this.$emit('add-row', index)
+    },
+    changeColumnList(list) {
+      this.$emit('update:column', list)
+    },
+    changeData(data) {
+      this.$emit('input', data)
     }
   }
 }

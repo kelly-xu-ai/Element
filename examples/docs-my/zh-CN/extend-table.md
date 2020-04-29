@@ -567,6 +567,62 @@ table可以通过手动，悬浮，单机双击来触发编辑状态（默认单
 ```
 :::
 
+### Table中拖拽排序
+
+由于当前没有兼容到固定列（冻结功能），所以固定列中是不可使用拖拽功能的。
+
+:::demo 使用`column-draggable`定义表头可拖拽，需要配合sync修饰符使用；使用`row-draggable`定义行可拖拽，需要配合v-model指令使用。
+
+```html
+<el-extend-table
+  v-model="tableData"
+  row-draggable
+  :column.sync="column"
+  column-draggable>
+</el-extend-table>
+
+<script>
+  export default {
+    data() {
+      return {
+        tableData: [
+          {
+            no: 1,
+            column: '初始化：第三列数据',
+            row: '初始化：第一行数据！'
+          },
+          {
+            no: 2,
+            column: '初始化：第三列数据',
+            row: '初始化：第二行数据！'
+          },
+          {
+            no: 3,
+            column: '初始化：第三列数据',
+            row: '初始化：第三行数据！'
+          },
+        ],
+        column: [
+          {
+            label: '编号',
+            prop: 'no'
+          },
+          {
+            label: '行',
+            prop: 'row'
+          },
+          {
+            label: '列',
+            prop: 'column'
+          }
+        ]
+      };
+    }
+  }
+</script>
+```
+:::
+
 ### Table中动态编辑框
 
 可根据不同条件动态的生成编辑框。
@@ -752,12 +808,14 @@ table可以通过手动，悬浮，单机双击来触发编辑状态（默认单
 ### Table Attributes
 | 参数      | 说明          | 类型      | 可选值                           | 默认值  |
 |---------- |-------------- |---------- |--------------------------------  |-------- |
-| data | 表单数据 | array | — | — |
-| column | 表单列定义 | array | — | — |
+| data/v-model | 表单数据（拖拽时需使用v-model） | array | — | — |
+| column[.sync] | 表单列定义（拖拽时需使用.sync） | array | — | — |
 | editable | 可编辑 | boolean | — | true |
 | trigger | 触发编辑方式 | string | click/dblclick/hover/manual | click |
 | autoAdd | 添加行数据的默认值 | object | — | — |
 | autoChange | 设置添加行时，是否自动添加 | boolean | — | true |
+| row-draggable | 设置行可拖拽 | boolean | — | false |
+| column-draggable | 设置列可拖拽 | boolean | — | false |
 | 其他 | 参照el-table | 参照el-table | 参照el-table | 参照el-table |
 
 ### Table Events

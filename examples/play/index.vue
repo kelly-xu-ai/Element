@@ -1,10 +1,10 @@
 <template>
   <div style="margin: 20px;">
-    <el-edit-table :data="tableData" :column="column">
+    <el-extend-table v-model="tableData" :column.sync="column">
       <template slot="remark" slot-scope="{ value, state, message }">
         <span style="color: red">备注：{{value}} {{state}} {{message}}</span>
       </template>
-    </el-edit-table>
+    </el-extend-table>
   </div>
 </template>
 
@@ -27,7 +27,8 @@
         column: [
           {
             label: 'no',
-            prop: 'no'
+            prop: 'no',
+            fixed: 'left'
           },
           {
             label: 'name',

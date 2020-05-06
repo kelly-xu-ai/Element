@@ -3,6 +3,7 @@ import { getCell, getColumnByCell, getRowIdentity } from './util';
 import { getStyle, hasClass, removeClass, addClass } from 'element-ui/src/utils/dom';
 import ElCheckbox from 'element-ui/packages/checkbox';
 import ElTooltip from 'element-ui/packages/tooltip';
+import draggable from 'vuedraggable'
 import debounce from 'throttle-debounce/debounce';
 import LayoutObserver from './layout-observer';
 import { mapStates } from './store/helper';
@@ -16,7 +17,8 @@ export default {
   components: {
     ElCheckbox,
     ElTooltip,
-    ValidateRow
+    ValidateRow,
+    draggable
   },
 
   props: {
@@ -28,7 +30,8 @@ export default {
     rowClassName: [String, Function],
     rowStyle: [Object, Function],
     fixed: String,
-    highlight: Boolean
+    highlight: Boolean,
+    isDraggable: Boolean
   },
 
   render(h) {
@@ -44,14 +47,32 @@ export default {
             this.columns.map(column => <col name={ column.id } key={column.id} />)
           }
         </colgroup>
-        <tbody>
-          {
-            data.reduce((acc, row) => {
-              return acc.concat(this.wrappedRowRender(row, acc.length));
-            }, [])
-          }
-          <el-tooltip effect={ this.table.tooltipEffect } placement="top" ref="tooltip" content={ this.tooltipContent }></el-tooltip>
-        </tbody>
+        {
+          // extend 添加拖拽排序功能
+          // todo
+          // transition-group问题同表头拖拽
+          // 固定列不可拖拽
+          this.isDraggable
+            ? <draggable
+              tag="tbody"
+              value={this.data}
+              on-input={value => this.$emit('change-data', value)}>
+              {
+                data.reduce((acc, row) => {
+                  return acc.concat(this.wrappedRowRender(row, acc.length));
+                }, [])
+              }
+              <el-tooltip effect={ this.table.tooltipEffect } placement="top" ref="tooltip" content={ this.tooltipContent }></el-tooltip>
+            </draggable>
+            : <tbody>
+              {
+                data.reduce((acc, row) => {
+                  return acc.concat(this.wrappedRowRender(row, acc.length));
+                }, [])
+              }
+              <el-tooltip effect={ this.table.tooltipEffect } placement="top" ref="tooltip" content={ this.tooltipContent }></el-tooltip>
+            </tbody>
+        }
       </table>
     );
   },
@@ -329,10 +350,12 @@ export default {
     },
 
     handleMouseEnter: debounce(30, function(index) {
+      this.$emit('row-mouse-enter', index)
       this.store.commit('setHoverRow', index);
     }),
 
-    handleMouseLeave: debounce(30, function() {
+    handleMouseLeave: debounce(30, function(index) {
+      this.$emit('row-mouse-leave', index)
       this.store.commit('setHoverRow', null);
     }),
 
@@ -386,7 +409,7 @@ export default {
         on-click={ ($event) => this.handleClick($event, row) }
         on-contextmenu={ ($event) => this.handleContextMenu($event, row) }
         on-mouseenter={ _ => this.handleMouseEnter($index) }
-        on-mouseleave={ this.handleMouseLeave }>
+        on-mouseleave={ _ => this.handleMouseLeave($index) }>
         {
           columns.map((column, cellIndex) => {
             const { rowspan, colspan } = this.getSpan(row, column, $index, cellIndex);

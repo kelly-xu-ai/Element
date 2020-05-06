@@ -1,11 +1,31 @@
 <template>
   <el-table
     class="el-extend-table"
+    :class="classes"
     ref="table"
     v-bind="$attrs"
     v-on="$listeners"
+    @row-mouse-enter="rowMouseEnter"
+    @row-mouse-leave="rowMouseLeave"
+    @cell-click="cellClick"
+    @cell-dblclick="cellDblclick"
     :data="data"
+    :column="column"
+    :column-draggable="columnDraggable"
+    :row-draggable="rowDraggable"
+    @change-column-list="changeColumnList"
+    @change-data="changeData"
     style="width: 100%">
+    <slot name="prefix" />
+    <el-table-column v-if="autoAdd" label="#" width="60" align="center">
+      <template slot-scope="{ row, $index }">
+        <add-cell
+          :index="$index"
+          :pageInfo="pageInfo"
+          @remove-row="removeRow"
+          @add-row="addRow"/>
+      </template>
+    </el-table-column>
     <el-table-column
       v-for="(item, columnIndex) in column"
       v-bind="copyBinds(item)"
@@ -17,14 +37,14 @@
         slot-scope="{ row, $index, state, message }">
         <component
           v-if="editRows.includes(row) && getEditable(item, row, $index)"
-          :is="getComponent(item.component)"
+          :is="getComponent(item.editor, { row, $index, state, message })"
           :value="row[item.prop]"
           :row="row"
           :column="item"
           :index="$index"
           :state="state"
           :message="message"
-          v-bind="getComponentBind(item.component)"
+          v-bind="getComponentBind(item.editor, { row, $index, state, message })"
           v-on="getModelEvent({item, row, index: $index, value: row[item.prop], state, message})"/>
         <RowCell
           v-else-if="item.render"
@@ -41,44 +61,30 @@
           :index="$index"
           :row="row"
           :state="state"
-          :message="message"/>
+          :message="message"
+          :isEdit="editRows.includes(row)"/>
         <span v-else>
           {{
             item.format
               ? item.format({index: $index, value: row[item.prop], row, state, message})
-              : row[item.prop] || ''
+              : row[item.prop] === undefined ? '' : row[item.prop]
           }}
         </span>
       </template>
     </el-table-column>
-    <el-table-column
-      label="操作">
-      <template slot-scope="{ row, $index }">
-        <slot
-          name="eidt"
-          :index="$index"
-          :row="row"
-          :is-edit="editRows.includes(row)">
-          <el-button
-            v-if="!editRows.includes(row)"
-            size="mini"
-            @click="editStart($index)">编辑</el-button>
-          <el-button
-            v-else
-            size="mini"
-            @click="editEnd($index)">完成</el-button>
-        </slot>
-      </template>
-    </el-table-column>
+    <slot name="suffix"/>
   </el-table>
 </template>
 
 <script>
 import RowCell from './row-cell'
+import AddCell from './add-cell'
 import ElTable from './table/index'
 import ElTableColumn from './table/src/table-column'
+import { deepCopy, typeOf } from 'element-ui/src/utils/extend'
+
 function isEditable(item, row, index) {
-  if (!item.component) return false
+  if (!item.editor) return false
   const { editable = true } = item
   if (typeof editable === 'boolean') return editable
   if (typeof editable === 'function') return editable({ row, index })
@@ -112,30 +118,50 @@ function mergeEvents(...rest) {
     return copy
   }
 }
-function getEvent(component) {
-  if (component && typeof component === 'object' && component.event) {
-    return component.event
+function getEvent(editor) {
+  if (editor && typeof editor === 'object' && editor.event) {
+    return editor.event
   }
   return 'input'
 }
-function getOns(component, params) {
-  if (component && component.on && typeof component.on === 'object') {
+function getOns(editor, params) {
+  if (editor && editor.on && typeof editor.on === 'object') {
     const copy = {}
-    Object.keys(component.on).forEach(key => {
+    Object.keys(editor.on).forEach(key => {
       copy[key] = function(...$event) {
-        component.on[key](params, ...$event)
+        editor.on[key](params, ...$event)
       }
     })
     return copy
   }
   return {}
 }
+function getAddData(column, autoAdd = {}) {
+  const o = {}
+  column.forEach(item => {
+    if (item.prop) {
+      o[item.prop] = ''
+    }
+  })
+  const copy = deepCopy(autoAdd)
+  if (copy && typeOf(copy) === 'object') {
+    return {
+      ...o,
+      ...copy
+    }
+  }
+  return o
+}
 export default {
   name: 'ElExtendTable',
   components: {
     RowCell,
+    AddCell,
     ElTable,
     ElTableColumn
+  },
+  model: {
+    prop: 'data'
   },
   props: {
     data: {
@@ -149,11 +175,39 @@ export default {
     editable: {
       type: Boolean,
       default: true
-    }
+    },
+    trigger: {
+      type: String,
+      validator: function(value) {
+        return ['manual', 'hover', 'click', 'dblclick'].indexOf(value) !== -1
+      },
+      default: 'click'
+    },
+    pageInfo: {
+      type: Object,
+      default: () => ({
+        currentPage: 1,
+        pageSizes: 0
+      })
+    },
+    autoAdd: {},
+    autoChange: {
+      type: Boolean,
+      default: true
+    },
+    columnDraggable: Boolean,
+    rowDraggable: Boolean
   },
   data() {
     return {
       editRows: []
+    }
+  },
+  computed: {
+    classes() {
+      return [
+        `el-extend-table-edit-${this.trigger}`
+      ]
     }
   },
   methods: {
@@ -178,26 +232,31 @@ export default {
     copyBinds(bind) {
       const copy = {}
       Object.keys(bind).forEach(key => {
-        if (!['prop', 'label', 'render', 'slot', 'format', 'component', 'editable', 'rules'].includes(key)) {
+        if (!['prop', 'label', 'render', 'slot', 'format', 'editor', 'editable', 'rules'].includes(key)) {
           copy[key] = bind[key]
         }
       })
       return copy
     },
-    getComponent(component = 'el-input') {
-      if (typeof component === 'string') {
-        return component
-      } else if (component && typeof component === 'object') {
-        return component.name || 'el-input'
+    getComponent(editor = 'el-input', { row, $index: index, state, message }) {
+      if (typeof editor === 'string') {
+        return editor
+      } else if (editor && typeof editor === 'object') {
+        return editor.component || 'el-input'
+      } else if (editor && typeof editor === 'function') {
+        return this.getComponent(editor({ row, index, state, message }), { row, $index: index, state, message })
       }
       return 'el-input'
     },
-    getComponentBind(component) {
-      if (component && typeof component === 'object') {
+    getComponentBind(editor, { row, $index: index, state, message }) {
+      if (typeof editor === 'function') {
+        editor = editor({ row, index, state, message })
+      }
+      if (editor && typeof editor === 'object') {
         const copy = {}
-        Object.keys(component).forEach(key => {
-          if (!['event', 'on', 'row', 'column', 'index', 'state', 'message'].includes(key)) {
-            copy[key] = component[key]
+        Object.keys(editor).forEach(key => {
+          if (!['component', 'event', 'on', 'row', 'column', 'index', 'state', 'message'].includes(key)) {
+            copy[key] = editor[key]
           }
         })
         return copy
@@ -220,26 +279,80 @@ export default {
       return events
     },
     getModelEvent({ item, row, index, value, state, message }) {
-      const event = getEvent(item.component)
+      const event = getEvent(item.editor)
       const changeEvent = {
         [event]: $value => {
           row[item.prop] = $value
           this.$emit('change', {row, prop: item.prop, index, value: $value, oldValue: value, state, message})
         }
       }
-      const ons = getOns(item.component, {row, prop: item.prop, index, oldValue: value})
+      const ons = getOns(item.editor, {row, prop: item.prop, index, oldValue: value})
       const validateEvents = this.getValidateEvents({ item, row, index, value})
       return mergeEvents(changeEvent, ons, validateEvents)
     },
     editStart(index) {
+      if (!this.editable) return
       const row = this.data[index]
       if (row && !this.editRows.includes(row)) {
         this.editRows.push(row)
       }
     },
     editEnd(index) {
+      if (!this.editable) return
       const row = this.data[index]
       this.editRows.splice(this.editRows.indexOf(row), 1)
+    },
+    rowMouseEnter(index) {
+      if (this.trigger === 'hover') {
+        this.editStart(index)
+      }
+    },
+    rowMouseLeave(index) {
+      if (this.trigger === 'hover') {
+        this.editEnd(index)
+      }
+    },
+    clickTrigger(trigger, row, column, cell, event) {
+      if (this.trigger !== trigger) return
+      const contant = cell.querySelector('.el-form-item') || {}
+      const nodes = contant.childNodes || []
+      let isSelf
+      nodes.forEach(node => {
+        if (node.contains(event.target)) {
+          isSelf = true
+        }
+      })
+      if (isSelf && this.editRows.includes(row)) return
+      if (this.editRows.includes(row)) {
+        this.editRows.splice(this.editRows.indexOf(row), 1)
+      } else {
+        this.editRows = []
+        this.editRows.push(row)
+      }
+    },
+    cellClick(...rest) {
+      this.clickTrigger('click', ...rest)
+    },
+    cellDblclick(...rest) {
+      this.clickTrigger('dblclick', ...rest)
+    },
+    removeRow(index) {
+      if (this.autoChange) {
+        this.data.splice(index, 1)
+      }
+      this.$emit('remove-row', index)
+    },
+    addRow(index) {
+      if (this.autoChange) {
+        this.data.splice(index + 1, 0, getAddData(this.column, this.autoAdd))
+      }
+      this.$emit('add-row', index)
+    },
+    changeColumnList(list) {
+      this.$emit('update:column', list)
+    },
+    changeData(data) {
+      this.$emit('input', data)
     }
   }
 }

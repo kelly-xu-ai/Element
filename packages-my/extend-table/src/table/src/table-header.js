@@ -2,6 +2,7 @@ import Vue from 'vue';
 import { hasClass, addClass, removeClass } from 'element-ui/src/utils/dom';
 import ElCheckbox from 'element-ui/packages/checkbox';
 import FilterPanel from './filter-panel.vue';
+import draggable from 'vuedraggable'
 import LayoutObserver from './layout-observer';
 import { mapStates } from './store/helper';
 
@@ -74,6 +75,44 @@ export default {
     // 是否拥有多级表头
     const isGroup = columnRows.length > 1;
     if (isGroup) this.$parent.isGroup = true;
+    const getTrs = (columns, rowIndex) => columns.map((column, cellIndex) => (<th
+      colspan={ column.colSpan }
+      rowspan={ column.rowSpan }
+      on-mousemove={ ($event) => this.handleMouseMove($event, column) }
+      on-mouseout={ this.handleMouseOut }
+      on-mousedown={ ($event) => this.handleMouseDown($event, column) }
+      on-click={ ($event) => this.handleHeaderClick($event, column) }
+      on-contextmenu={ ($event) => this.handleHeaderContextMenu($event, column) }
+      style={ this.getHeaderCellStyle(rowIndex, cellIndex, columns, column) }
+      class={ this.getHeaderCellClass(rowIndex, cellIndex, columns, column) }
+      key={ column.id }>
+      <div class={ ['cell', column.filteredValue && column.filteredValue.length > 0 ? 'highlight' : '', column.labelClassName] }>
+        {
+          column.renderHeader
+            ? column.renderHeader.call(this._renderProxy, h, { column, $index: cellIndex, store: this.store, _self: this.$parent.$vnode.context })
+            : column.label
+        }
+        {
+          column.sortable ? (<span
+            class="caret-wrapper"
+            on-click={ ($event) => this.handleSortClick($event, column) }>
+            <i class="sort-caret ascending"
+              on-click={ ($event) => this.handleSortClick($event, column, 'ascending') }>
+            </i>
+            <i class="sort-caret descending"
+              on-click={ ($event) => this.handleSortClick($event, column, 'descending') }>
+            </i>
+          </span>) : ''
+        }
+        {
+          column.filterable ? (<span
+            class="el-table__column-filter-trigger"
+            on-click={ ($event) => this.handleFilterClick($event, column) }>
+            <i class={ ['el-icon-arrow-down', column.filterOpened ? 'el-icon-arrow-up' : ''] }></i>
+          </span>) : ''
+        }
+      </div>
+    </th>))
     return (
       <table
         class="el-table__header"
@@ -91,54 +130,41 @@ export default {
         <thead class={ [{ 'is-group': isGroup, 'has-gutter': this.hasGutter }] }>
           {
             this._l(columnRows, (columns, rowIndex) =>
-              <tr
-                style={ this.getHeaderRowStyle(rowIndex) }
-                class={ this.getHeaderRowClass(rowIndex) }
-              >
-                {
-                  columns.map((column, cellIndex) => (<th
-                    colspan={ column.colSpan }
-                    rowspan={ column.rowSpan }
-                    on-mousemove={ ($event) => this.handleMouseMove($event, column) }
-                    on-mouseout={ this.handleMouseOut }
-                    on-mousedown={ ($event) => this.handleMouseDown($event, column) }
-                    on-click={ ($event) => this.handleHeaderClick($event, column) }
-                    on-contextmenu={ ($event) => this.handleHeaderContextMenu($event, column) }
-                    style={ this.getHeaderCellStyle(rowIndex, cellIndex, columns, column) }
-                    class={ this.getHeaderCellClass(rowIndex, cellIndex, columns, column) }
-                    key={ column.id }>
-                    <div class={ ['cell', column.filteredValue && column.filteredValue.length > 0 ? 'highlight' : '', column.labelClassName] }>
-                      {
-                        column.renderHeader
-                          ? column.renderHeader.call(this._renderProxy, h, { column, $index: cellIndex, store: this.store, _self: this.$parent.$vnode.context })
-                          : column.label
-                      }
-                      {
-                        column.sortable ? (<span
-                          class="caret-wrapper"
-                          on-click={ ($event) => this.handleSortClick($event, column) }>
-                          <i class="sort-caret ascending"
-                            on-click={ ($event) => this.handleSortClick($event, column, 'ascending') }>
-                          </i>
-                          <i class="sort-caret descending"
-                            on-click={ ($event) => this.handleSortClick($event, column, 'descending') }>
-                          </i>
-                        </span>) : ''
-                      }
-                      {
-                        column.filterable ? (<span
-                          class="el-table__column-filter-trigger"
-                          on-click={ ($event) => this.handleFilterClick($event, column) }>
-                          <i class={ ['el-icon-arrow-down', column.filterOpened ? 'el-icon-arrow-up' : ''] }></i>
-                        </span>) : ''
-                      }
-                    </div>
-                  </th>))
-                }
-                {
-                  this.hasGutter ? <th class="gutter"></th> : ''
-                }
-              </tr>
+              // extend 这里修改表头可拖拽排序列。
+
+              // todo 因为transition-group会渲染一个真实的 DOM 元素（https://cn.vuejs.org/v2/api/#transition-group）
+              // vuedraggable 也会渲染一个根元素，所以使用transition-group会改变dom的结构，导致table样式出为题。
+              // 后续修改：可修改vuedraggable插件渲染transition-group作为根元素，transition-group的tag设置为tr。
+
+              // 可能存在问题
+              // this.hasGutter没细究是什么，可能存在问题。
+              // 固定列不可拖拽
+              // 固定列和非固定列之间还没有交互。
+              this.isDraggable
+                ? <draggable
+                  tag="tr"
+                  value={this.columnList}
+                  on-input={value => this.$emit('change-column-list', value)}
+                  style={ this.getHeaderRowStyle(rowIndex) }
+                  class={ this.getHeaderRowClass(rowIndex) }>
+                  {
+                    getTrs(columns, rowIndex)
+                  }
+                  {
+                    this.hasGutter ? <th class="gutter"></th> : ''
+                  }
+                </draggable>
+                : <tr
+                  style={ this.getHeaderRowStyle(rowIndex) }
+                  class={ this.getHeaderRowClass(rowIndex) }
+                >
+                  {
+                    getTrs(columns, rowIndex)
+                  }
+                  {
+                    this.hasGutter ? <th class="gutter"></th> : ''
+                  }
+                </tr>
             )
           }
         </thead>
@@ -160,11 +186,14 @@ export default {
           order: ''
         };
       }
-    }
+    },
+    columnList: Array,
+    isDraggable: Boolean
   },
 
   components: {
-    ElCheckbox
+    ElCheckbox,
+    draggable
   },
 
   computed: {

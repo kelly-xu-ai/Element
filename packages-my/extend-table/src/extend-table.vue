@@ -16,6 +16,7 @@
     @change-column-list="changeColumnList"
     @change-data="changeData"
     style="width: 100%">
+    <slot name="prefix" />
     <el-table-column v-if="autoAdd" label="#" width="60" align="center">
       <template slot-scope="{ row, $index }">
         <add-cell
@@ -71,7 +72,7 @@
         </span>
       </template>
     </el-table-column>
-    <slot/>
+    <slot name="suffix"/>
   </el-table>
 </template>
 

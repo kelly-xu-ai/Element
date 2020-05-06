@@ -106,6 +106,76 @@
 ```
 :::
 
+### Table表多选
+
+:::demo 利用插槽实现多选。
+
+```html
+<el-extend-table :data="tableData" :column="column" @selection-change="handleSelectionChange">
+  <template slot="prefix">
+    <el-table-column
+      type="selection"
+      width="55">
+    </el-table-column>
+  </template>
+</el-extend-table>
+<span>{{ selection }}</span>
+
+<script>
+  const tableData = [
+    {
+      no: 1,
+      name: 'name1',
+      remark: 'remark1'
+    },
+    {
+      no: 2,
+      name: 'name2',
+      remark: 'remark2'
+    },
+    {
+      no: 3,
+      name: 'name3',
+      remark: 'remark3'
+    }
+  ]
+  const column = [
+    {
+      label: 'no',
+      prop: 'no'
+    },
+    {
+      label: 'name',
+      prop: 'name'
+    },
+    {
+      label: 'remark',
+      prop: 'remark'
+    }
+  ]
+  export default {
+    data() {
+      return {
+        tableData,
+        column,
+        multipleSelection: []
+      };
+    },
+    computed: {
+      selection() {
+        return this.multipleSelection.map(i => i.name)
+      }
+    },
+    methods: {
+      handleSelectionChange(val) {
+        this.multipleSelection = val;
+      }
+    }
+  }
+</script>
+```
+:::
+
 ### Table编辑触发方式
 
 table可以通过手动，悬浮，单机双击来触发编辑状态（默认单击触发）。
@@ -754,7 +824,7 @@ table可以通过手动，悬浮，单机双击来触发编辑状态（默认单
 
 当输入数字以外的字符时不生效，且退回原来的值。
 
-:::demo 用on中的事件来限定输入。ps：当event，on，rules中事件同名时，触发事件顺序event>on>rules（目前rules不生效）。
+:::demo 用on中的事件来限定输入。ps：当event，on，rules中事件同名时，触发事件顺序event>on>rules。
 
 ```html
 <el-extend-table :data="tableData" :column="column">
@@ -855,3 +925,10 @@ table可以通过手动，悬浮，单机双击来触发编辑状态（默认单
 | event | 双向绑定触发事件 | srting | — | 默认值input，当event，on，rules中事件同名时目前触发顺序是event>on>rules |
 | on | 编辑组件触发事件回调 | object{function/array[function]} | — | 需要注意this的指向问题，不建议使用，如果需要监听编辑组件的修改可使用table中的change事件，判断参数中的prop, index即可判断出具体改变 |
 | 其他 | 其他属性会自动映射到组件的属性上 | — | — | 所有组件props上都会额外被传入row, column, index, state, message |
+
+### Table Slots
+| name | 说明 |
+|------|--------|
+| prefix | 表单头部内容 |
+| suffix | 表单尾部内容 |
+| 其他 | 参照el-table（Column中自定义的slot不要和这边重名） |

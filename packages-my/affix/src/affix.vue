@@ -17,19 +17,19 @@ function getScroll(target, top) {
   let ret = target[prop];
 
   if (typeof ret !== 'number') {
-    ret = window.document.documentElement[method];
+    ret = target[method];
   }
 
   return ret;
 }
 
-function getOffset(element) {
+function getOffset(element, target) {
   const rect = element.getBoundingClientRect();
 
-  const scrollTop = getScroll(window, true);
-  const scrollLeft = getScroll(window);
+  const scrollTop = getScroll(target, true);
+  const scrollLeft = getScroll(target);
 
-  const docEl = window.document.body;
+  const docEl = target.document ? target.document.body : target;
   const clientTop = docEl.clientTop || 0;
   const clientLeft = docEl.clientLeft || 0;
 
@@ -52,7 +52,8 @@ export default {
     useCapture: {
       type: Boolean,
       default: false
-    }
+    },
+    target: {}
   },
   data() {
     return {
@@ -79,22 +80,44 @@ export default {
       ];
     }
   },
+  watch: {
+    target(target, oldTarget) {
+      if (target) {
+        on(target, 'scroll', this.handleScroll, this.useCapture);
+        on(target, 'resize', this.handleScroll, this.useCapture);
+        this.$nextTick(() => {
+          this.handleScroll();
+        });
+      }
+      if (oldTarget) {
+        off(oldTarget, 'scroll', this.handleScroll, this.useCapture);
+        off(oldTarget, 'resize', this.handleScroll, this.useCapture);
+      }
+    }
+  },
   mounted() {
-    on(window, 'scroll', this.handleScroll, this.useCapture);
-    on(window, 'resize', this.handleScroll, this.useCapture);
-    this.$nextTick(() => {
-      this.handleScroll();
-    });
+    const target = this.target
+    if (target) {
+      on(target, 'scroll', this.handleScroll, this.useCapture);
+      on(target, 'resize', this.handleScroll, this.useCapture);
+      this.$nextTick(() => {
+        this.handleScroll();
+      });
+    }
   },
   beforeDestroy() {
-    off(window, 'scroll', this.handleScroll, this.useCapture);
-    off(window, 'resize', this.handleScroll, this.useCapture);
+    const target = this.target
+    if (target) {
+      off(target, 'scroll', this.handleScroll, this.useCapture);
+      off(target, 'resize', this.handleScroll, this.useCapture);
+    }
   },
   methods: {
     handleScroll() {
+      const target = this.target || window
       const affix = this.affix;
-      const scrollTop = getScroll(window, true);
-      const elOffset = getOffset(this.$el);
+      const scrollTop = getScroll(target, true);
+      const elOffset = getOffset(this.$el, target);
       const windowHeight = window.innerHeight;
       const elHeight = this.$el.getElementsByTagName('div')[0].offsetHeight;
 

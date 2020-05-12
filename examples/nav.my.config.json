@@ -29,6 +29,15 @@
               "title": "扩展表格"
             }
           ]
+        },
+        {
+          "groupName": "other",
+          "list": [
+            {
+              "path": "/affix",
+              "title": "图钉"
+            }
+          ]
         }
       ]
     },

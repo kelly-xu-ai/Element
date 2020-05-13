@@ -5,14 +5,15 @@
     ref="table"
     v-bind="$attrs"
     v-on="$listeners"
-    @row-mouse-enter="rowMouseEnter"
-    @row-mouse-leave="rowMouseLeave"
-    @cell-click="cellClick"
-    @cell-dblclick="cellDblclick"
+    :affix="affix"
     :data="data"
     :column="column"
     :column-draggable="columnDraggable"
     :row-draggable="rowDraggable"
+    @row-mouse-enter="rowMouseEnter"
+    @row-mouse-leave="rowMouseLeave"
+    @cell-click="cellClick"
+    @cell-dblclick="cellDblclick"
     @change-column-list="changeColumnList"
     @change-data="changeData"
     style="width: 100%">
@@ -201,7 +202,11 @@ export default {
       default: true
     },
     columnDraggable: Boolean,
-    rowDraggable: Boolean
+    rowDraggable: Boolean,
+    affix: {
+      type: [Boolean, Object],
+      default: false
+    }
   },
   data() {
     return {

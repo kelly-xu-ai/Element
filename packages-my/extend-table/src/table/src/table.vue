@@ -29,6 +29,7 @@
         }"
         :is-draggable="columnDraggable"
         :columnList="column"
+        :affix="affix"
         @change-column-list="$emit('change-column-list', $event)">
       </table-header>
     </div>
@@ -345,7 +346,11 @@
 
       lazy: Boolean,
 
-      load: Function
+      load: Function,
+      affix: {
+        type: [Boolean, Object],
+        default: false
+      }
     },
 
     components: {

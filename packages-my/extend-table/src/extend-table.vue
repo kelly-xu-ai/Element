@@ -17,6 +17,7 @@
     @change-data="changeData"
     style="width: 100%">
     <slot name="prefix" />
+    <el-table-column v-if="checkable" fixed type="selection" width="55"></el-table-column>
     <el-table-column v-if="autoAdd" label="#" width="60" align="center">
       <template slot-scope="{ row, $index }">
         <add-cell
@@ -175,6 +176,10 @@ export default {
     editable: {
       type: Boolean,
       default: true
+    },
+    checkable: {
+      type: Boolean,
+      default: false
     },
     trigger: {
       type: String,

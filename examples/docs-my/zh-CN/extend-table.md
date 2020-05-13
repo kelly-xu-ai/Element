@@ -111,13 +111,7 @@
 :::demo 利用插槽实现多选。
 
 ```html
-<el-extend-table :data="tableData" :column="column" @selection-change="handleSelectionChange">
-  <template slot="prefix">
-    <el-table-column
-      type="selection"
-      width="55">
-    </el-table-column>
-  </template>
+<el-extend-table :data="tableData" :column="column" checkable @selection-change="handleSelectionChange">
 </el-extend-table>
 <span>{{ selection }}</span>
 

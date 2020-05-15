@@ -6,6 +6,32 @@ import draggable from 'vuedraggable'
 import LayoutObserver from './layout-observer';
 import { mapStates } from './store/helper';
 
+const AffixTable = {
+  props: {
+    affix: {}
+  },
+  computed: {
+    isAffix() {
+      return !!this.affix
+    },
+    affixObject() {
+      return this.affix && typeof this.affix === 'object' ? this.affix : {}
+    }
+  },
+  render(h) {
+    const { $slots, affixObject, $attrs } = this
+    return (
+      this.isAffix
+        ? h(
+          'el-affix',
+          { props: { ...affixObject, tag: 'table', tagAttrs: $attrs } },
+          $slots.default
+        )
+        : <table attrs={this.$attrs}>{$slots.default}</table>
+    )
+  }
+}
+
 const getAllColumns = (columns) => {
   const result = [];
   columns.forEach((column) => {
@@ -114,7 +140,8 @@ export default {
       </div>
     </th>))
     return (
-      <table
+      <AffixTable
+        affix={this.affix}
         class="el-table__header"
         cellspacing="0"
         cellpadding="0"
@@ -168,7 +195,7 @@ export default {
             )
           }
         </thead>
-      </table>
+      </AffixTable>
     );
   },
 
@@ -188,12 +215,17 @@ export default {
       }
     },
     columnList: Array,
-    isDraggable: Boolean
+    isDraggable: Boolean,
+    affix: {
+      type: [Boolean, Object],
+      default: false
+    }
   },
 
   components: {
     ElCheckbox,
-    draggable
+    draggable,
+    AffixTable
   },
 
   computed: {

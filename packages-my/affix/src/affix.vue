@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div ref="point" :class="classes" :style="styles">
+    <component :is="tag" ref="point" v-bind="tagAttrs" :class="classes" :style="styles">
       <slot></slot>
-    </div>
+    </component>
     <div v-show="slot" :style="slotStyle"></div>
   </div>
 </template>
@@ -53,7 +53,12 @@ export default {
       type: Boolean,
       default: false
     },
-    target: {}
+    target: {},
+    tag: {
+      type: String,
+      default: 'div'
+    },
+    tagAttrs: {}
   },
   data() {
     return {

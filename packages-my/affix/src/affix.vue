@@ -118,6 +118,21 @@ export default {
     }
   },
   methods: {
+    update() {
+      if (this.affix) {
+        const target = this.target || window
+        const elOffset = getOffset(this.$el, target);
+        this.slotStyle = {
+          width: this.$refs.point.clientWidth + 'px',
+          height: this.$refs.point.clientHeight + 'px'
+        };
+        this.styles = {
+          ...this.styles,
+          left: `${elOffset.left}px`,
+          width: `${this.$el.offsetWidth}px`
+        };
+      }
+    },
     handleScroll() {
       const target = this.target || window
       const affix = this.affix;

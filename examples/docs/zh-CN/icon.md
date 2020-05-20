@@ -22,7 +22,7 @@
 <el-tabs type="border-card">
   <el-tab-pane label="我的图标">
     <ul class="icon-list">
-      <li v-for="name in $iconMy" :key="name" @click="copy()">
+      <li v-for="name in $iconMy" :key="name">
         <span>
           <i :class="'my-icon-' + name"></i>
           <span class="icon-name">{{'my-icon-' + name}}</span>
@@ -33,7 +33,7 @@
 
   <el-tab-pane label="Element图标">
     <ul class="icon-list">
-      <li v-for="name in $icon" :key="name" @click="copy()">
+      <li v-for="name in $icon" :key="name">
       <span>
         <i :class="'el-icon-' + name"></i>
         <span class="icon-name">{{'el-icon-' + name}}</span>

@@ -65,13 +65,9 @@
           :state="state"
           :message="message"
           :isEdit="editRows.includes(row)"/>
-        <span v-else>
-          {{
-            item.format
-              ? item.format({index: $index, value: row[item.prop], row, state, message})
-              : row[item.prop] === undefined ? '' : row[item.prop]
-          }}
-        </span>
+        <template v-else>
+          {{ item.format ? item.format({index: $index, value: row[item.prop], row, state, message}) : row[item.prop] === undefined ? '' : row[item.prop] }}
+        </template>
       </template>
     </el-table-column>
     <slot name="suffix"/>

@@ -418,81 +418,6 @@ table可以通过手动，悬浮，单机双击来触发编辑状态（默认单
 ```
 :::
 
-### Table中自动添加和删除一行数据
-
-:::demo 通过设置autoAdd来自动添加一行数据。
-
-```html
-<p>设置autoAdd为添加的默认数据</p>
-<el-extend-table :data="tableData" :column="column" :auto-add="autoAdd">
-</el-extend-table>
-<el-divider></el-divider>
-<p>设置autoChange为false动态添加不同的数据</p>
-<el-extend-table
-  :data="tableData"
-  :column="column"
-  :autoAdd="true"
-  :auto-change="false"
-  @add-row="addRow"
-  @remove-row="removeRow">
-</el-extend-table>
-<script>
-  const tableData = [
-    {
-      name: '盖伦',
-      phone: '13300000000',
-      address: '江苏南京'
-    },
-    {
-      name: '亚索',
-      phone: '13300000001',
-      address: '安徽合肥'
-    }
-  ]
-  const column = [
-    {
-      label: '姓名',
-      prop: 'name',
-      editor: 'el-input'
-    },
-    {
-      label: '联系方式',
-      prop: 'phone',
-      editor: 'el-input'
-    },
-    {
-      label: '地址',
-      prop: 'address',
-      editor: 'el-input'
-    }
-  ]
-  export default {
-    data() {
-      return {
-        tableData,
-        column,
-        autoAdd: {
-          name: 'new',
-          phone: '',
-          address: ''
-        }
-      };
-    },
-    methods: {
-      addRow(index) {
-        const cell = this.tableData[index]
-        const copy = { ...cell, name: cell.name + '-copy' }
-        this.tableData.splice(index + 1, 0, copy)
-      },
-      removeRow(index) {
-        this.tableData.splice(index, 1)
-      }
-    }
-  }
-</script>
-```
-:::
-
 ### Table中表单验证
 
 通过rules定义验证规则，暴露state, message返回验证结果。
@@ -876,8 +801,6 @@ table可以通过手动，悬浮，单机双击来触发编辑状态（默认单
 | column[.sync] | 表单列定义（拖拽时需使用.sync） | array | — | — |
 | editable | 可编辑 | boolean | — | true |
 | trigger | 触发编辑方式 | string | click/dblclick/hover/manual | click |
-| autoAdd | 添加行数据的默认值 | object | — | — |
-| autoChange | 设置添加行时，是否自动添加 | boolean | — | true |
 | row-draggable | 设置行可拖拽 | boolean | — | false |
 | column-draggable | 设置列可拖拽 | boolean | — | false |
 | 其他 | 参照el-table | 参照el-table | 参照el-table | 参照el-table |
@@ -886,8 +809,6 @@ table可以通过手动，悬浮，单机双击来触发编辑状态（默认单
 | 事件名称 | 说明 | 回调参数 |
 |---------- |-------- |---------- |
 | change | 编辑值发生改变时触发 | { row, prop, index, value, oldValue, state, message } |
-| add-row | 添加一行时触发 | index |
-| remove-row | 删除一行时触发 | index |
 | 其他 | 参照el-table | 参照el-table |
 
 ### Table Methods

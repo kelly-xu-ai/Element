@@ -67,7 +67,6 @@
 
 <script>
 import RowCell from './row-cell'
-import AddCell from './add-cell'
 import ElTable from './table/index'
 import ElTableColumn from './table/src/table-column'
 
@@ -128,7 +127,6 @@ export default {
   name: 'ElExtendTable',
   components: {
     RowCell,
-    AddCell,
     ElTable,
     ElTableColumn
   },

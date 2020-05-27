@@ -7,15 +7,15 @@
 
 <script>
   const tableData = [
-    { no: 1, name: 'test', remark: ';ll;kljjkahsdka' },
-    { no: 1, name: 'test', remark: ';ll;kljjkahsdka' },
-    { no: 1, name: 'test', remark: ';ll;kljjkahsdka' },
-    { no: 1, name: 'test', remark: ';ll;kljjkahsdka' }
+    { no: 1, name: 'test', remark: ';ll;kljjkahsdkafsdaffsdaf' },
+    { no: 1, name: 'test', remark: ';ll;kljjkahsdsdafsdafkfsadfsaa' },
+    { no: 1, name: 'test', remark: ';ll;kljjkahsadfsdafadsfsadfsdka' },
+    { no: 1, name: 'test', remark: ';ll;kljjkahssdfsdafsadfdka' }
   ]
   const column = [
     { prop: 'no', label: 'no' },
     { prop: 'name', label: 'name' },
-    { prop: 'remark', label: 'remark' },
+    { prop: 'remark', label: 'remark', width: 100, 'show-overflow-tooltip': true },
   ]
   export default {
     data() {

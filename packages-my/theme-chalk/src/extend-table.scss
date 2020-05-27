@@ -2,6 +2,7 @@
 @import "common/var";
 
 @include b(extend-table) {
+  // hover编辑时overflow样式去掉，兼容proper
   &-edit-hover {
     &.el-table {
       overflow: unset;
@@ -13,10 +14,21 @@
       }
     }
   }
+  // 伪造form表单的验证样式
   & .el-form-item {
     margin-bottom: 0;
     display: inline-block;
+    width: 100%;
   }
+  .el-tooltip {
+    .el-form-item {
+      white-space: nowrap;
+      min-width: 50px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+  // 下面的样式以后去掉
   &--add-cell {
     .el-extend-table--add-cell-box {
       display: none;

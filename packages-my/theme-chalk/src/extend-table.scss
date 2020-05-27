@@ -16,9 +16,9 @@
   }
   // 伪造form表单的验证样式
   & .el-form-item {
-    margin-bottom: 0;
-    display: inline-block;
-    width: 100%;
+    // margin-bottom: 0;
+    display: inline;
+    // width: 100%;
   }
   .el-tooltip {
     .el-form-item {
@@ -26,30 +26,6 @@
       min-width: 50px;
       overflow: hidden;
       text-overflow: ellipsis;
-    }
-  }
-  // 下面的样式以后去掉
-  &--add-cell {
-    .el-extend-table--add-cell-box {
-      display: none;
-    }
-    &:hover {
-      & .el-extend-table--add-cell-index {
-        display: none;
-      }
-      & .el-extend-table--add-cell-box {
-        display: inline-block;
-      }
-    }
-    i {
-      font-size: 16px;
-      cursor: pointer;
-    }
-    i.el-extend-table--add-cell-remove {
-      color: #F56C6C;
-    }
-    i.el-extend-table--add-cell-plus {
-      color: #409EFF;
     }
   }
 }

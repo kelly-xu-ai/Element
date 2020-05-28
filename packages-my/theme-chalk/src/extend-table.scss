@@ -16,10 +16,11 @@
   }
   // 伪造form表单的验证样式
   & .el-form-item {
-    margin-bottom: 0;
-    display: inline-block;
-    width: 100%;
+    // margin-bottom: 0;
+    display: inline;
+    // width: 100%;
   }
+  // 兼容使用el-tooltip超出不显示
   .el-tooltip {
     .el-form-item {
       white-space: nowrap;
@@ -28,28 +29,20 @@
       text-overflow: ellipsis;
     }
   }
-  // 下面的样式以后去掉
-  &--add-cell {
-    .el-extend-table--add-cell-box {
-      display: none;
-    }
-    &:hover {
-      & .el-extend-table--add-cell-index {
-        display: none;
-      }
-      & .el-extend-table--add-cell-box {
-        display: inline-block;
-      }
-    }
-    i {
-      font-size: 16px;
-      cursor: pointer;
-    }
-    i.el-extend-table--add-cell-remove {
-      color: #F56C6C;
-    }
-    i.el-extend-table--add-cell-plus {
-      color: #409EFF;
-    }
+  // 使用el-scroll代替滚动条
+  .el-table__body-wrapper {
+    overflow: unset;
+  }
+  &.el-table--scrollable-y .el-table__body-wrapper {
+    overflow-y: unset;
+  }
+  &.el-table--scrollable-x .el-table__body-wrapper {
+    overflow-x: unset;
+  }
+  &:not(.el-table--scrollable-y) .el-scrollbar__wrap {
+    margin-bottom: 0!important;
+  }
+  .el-scrollbar__bar {
+    z-index: 4;
   }
 }

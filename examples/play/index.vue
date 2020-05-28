@@ -1,7 +1,6 @@
 <template>
   <div style="margin: 20px;">
-    <el-extend-table :data="data" :column="column" :affix="affix" />
-    <div style="height: 200vh;"></div>
+    <el-extend-table @table-scroll="tableScroll" style="width: 500px;" size="small" checkable :data="data" :column="column" :affix="affix" />
   </div>
 </template>
 
@@ -10,12 +9,14 @@
     { no: 1, name: 'test', remark: ';ll;kljjkahsdkafsdaffsdaf' },
     { no: 1, name: 'test', remark: ';ll;kljjkahsdsdafsdafkfsadfsaa' },
     { no: 1, name: 'test', remark: ';ll;kljjkahsadfsdafadsfsadfsdka' },
+    { no: 1, name: 'test', remark: ';ll;kljjkahssdfsdafsadfdka' },
+    { no: 1, name: 'test', remark: ';ll;kljjkahssdfsdafsadfdka' },
     { no: 1, name: 'test', remark: ';ll;kljjkahssdfsdafsadfdka' }
   ]
   const column = [
-    { prop: 'no', label: 'no' },
-    { prop: 'name', label: 'name' },
-    { prop: 'remark', label: 'remark', width: 100, 'show-overflow-tooltip': true },
+    { prop: 'no', label: 'no', width: 100 },
+    { prop: 'name', label: 'name', width: 300 },
+    { prop: 'remark', label: 'remark', width: 300, 'show-overflow-tooltip': true },
   ]
   export default {
     data() {
@@ -29,6 +30,11 @@
         return {
           target: window
         }
+      }
+    },
+    methods: {
+      tableScroll(e) {
+        console.log('scroll', e)
       }
     }
   };

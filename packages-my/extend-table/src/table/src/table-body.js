@@ -79,7 +79,11 @@ export default {
 
   computed: {
     table() {
-      return this.$parent;
+      if (this.$parent.$options.name === 'ElTable') {
+        return this.$parent
+      } else {
+        return this.$parent.$parent;
+      }
     },
 
     ...mapStates({

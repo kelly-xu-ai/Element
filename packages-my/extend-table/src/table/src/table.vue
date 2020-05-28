@@ -39,7 +39,8 @@
       ref="bodyWrapper"
       :class="[layout.scrollX ? `is-scrolling-${scrollPosition}` : 'is-scrolling-none']"
       :style="[bodyHeight]"
-      wrapStyle="overflow-x: hidden;overflow-y: hidden;">
+      wrapStyle="overflow-x: hidden;overflow-y: hidden;"
+      @scroll="$emit('table-scroll', $event)">
       <table-body
         ref="table-body"
         :context="context"

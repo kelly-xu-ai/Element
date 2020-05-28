@@ -1,6 +1,6 @@
 <template>
   <div style="margin: 20px;">
-    <el-extend-table style="width: 500px;" size="small" checkable :data="data" :column="column" :affix="affix" />
+    <el-extend-table @table-scroll="tableScroll" style="width: 500px;" size="small" checkable :data="data" :column="column" :affix="affix" />
   </div>
 </template>
 
@@ -30,6 +30,11 @@
         return {
           target: window
         }
+      }
+    },
+    methods: {
+      tableScroll(e) {
+        console.log('scroll', e)
       }
     }
   };

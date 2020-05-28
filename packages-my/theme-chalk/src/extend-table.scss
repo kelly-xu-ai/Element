@@ -39,6 +39,9 @@
   &.el-table--scrollable-x .el-table__body-wrapper {
     overflow-x: unset;
   }
+  &:not(.el-table--scrollable-y) .el-scrollbar__wrap {
+    margin-bottom: 0!important;
+  }
   .el-scrollbar__bar {
     z-index: 4;
   }

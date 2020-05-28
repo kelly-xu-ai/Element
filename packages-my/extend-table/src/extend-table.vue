@@ -16,6 +16,7 @@
     @cell-dblclick="cellDblclick"
     @change-column-list="changeColumnList"
     @change-data="changeData"
+    @table-scroll="$emit('table-scroll', $event)"
     style="width: 100%">
     <slot name="prefix" />
     <el-table-column v-if="checkable" fixed type="selection" width="55"></el-table-column>

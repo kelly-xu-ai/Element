@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import scrollbarWidth from 'element-ui/src/utils/scrollbar-width';
+// import scrollbarWidth from 'element-ui/src/utils/scrollbar-width';
 import { parseHeight } from './util';
 
 class TableLayout {
@@ -24,7 +24,9 @@ class TableLayout {
     this.viewportHeight = null; // Table Height - Scroll Bar Height
     this.bodyHeight = null; // Table Height - Table Header Height
     this.fixedBodyHeight = null; // Table Height - Table Header Height - Scroll Bar Height
-    this.gutterWidth = scrollbarWidth();
+    // this.gutterWidth = scrollbarWidth();
+    // 兼容el-scroll作为滚动的条，计算长度是滚动条长度按照0来计算
+    this.gutterWidth = 0
 
     for (let name in options) {
       if (options.hasOwnProperty(name)) {

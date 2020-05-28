@@ -33,11 +33,13 @@
         @change-column-list="$emit('change-column-list', $event)">
       </table-header>
     </div>
-    <div
+    <el-scrollbar
+      v-mousewheel="handleFixedMousewheel"
       class="el-table__body-wrapper"
       ref="bodyWrapper"
       :class="[layout.scrollX ? `is-scrolling-${scrollPosition}` : 'is-scrolling-none']"
-      :style="[bodyHeight]">
+      :style="[bodyHeight]"
+      wrapStyle="overflow-x: hidden;overflow-y: hidden;">
       <table-body
         ref="table-body"
         :context="context"
@@ -69,7 +71,7 @@
         ref="appendWrapper">
         <slot name="append"></slot>
       </div>
-    </div>
+    </el-scrollbar>
     <div
       v-if="showSummary"
       v-show="data && data.length > 0"
@@ -533,7 +535,7 @@
       },
 
       bodyWrapper() {
-        return this.$refs.bodyWrapper;
+        return this.$refs.bodyWrapper.$refs.wrap;
       },
 
       shouldUpdateHeight() {

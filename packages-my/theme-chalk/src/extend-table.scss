@@ -20,6 +20,7 @@
     display: inline;
     // width: 100%;
   }
+  // 兼容使用el-tooltip超出不显示
   .el-tooltip {
     .el-form-item {
       white-space: nowrap;
@@ -27,5 +28,18 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+  }
+  // 使用el-scroll代替滚动条
+  .el-table__body-wrapper {
+    overflow: unset;
+  }
+  &.el-table--scrollable-y .el-table__body-wrapper {
+    overflow-y: unset;
+  }
+  &.el-table--scrollable-x .el-table__body-wrapper {
+    overflow-x: unset;
+  }
+  .el-scrollbar__bar {
+    z-index: 4;
   }
 }

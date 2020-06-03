@@ -3,11 +3,13 @@
 import AreaPicker from '../packages-my/area-picker/index.js';
 import ExtendTable from '../packages-my/extend-table/index.js';
 import Affix from '../packages-my/affix/index.js';
+import ExtendBaseTable from '../packages-my/extend-base-table/index.js';
 
 const components = [
   AreaPicker,
   ExtendTable,
-  Affix
+  Affix,
+  ExtendBaseTable
 ];
 
 const install = function(Vue, opts = {}) {
@@ -26,5 +28,6 @@ export default {
   install,
   AreaPicker,
   ExtendTable,
-  Affix
+  Affix,
+  ExtendBaseTable
 };

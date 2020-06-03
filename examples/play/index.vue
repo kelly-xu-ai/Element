@@ -1,6 +1,7 @@
 <template>
   <div style="margin: 20px;">
-    <el-extend-table @table-scroll="tableScroll" style="width: 500px;" size="small" checkable :data="data" :column="column" :affix="affix" />
+    <ElExtendBaseTable>
+    </ElExtendBaseTable>
   </div>
 </template>
 

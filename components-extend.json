@@ -1,5 +1,6 @@
 {
   "area-picker": "./packages-my/area-picker/index.js",
   "extend-table": "./packages-my/extend-table/index.js",
-  "affix": "./packages-my/affix/index.js"
+  "affix": "./packages-my/affix/index.js",
+  "extend-base-table": "./packages-my/extend-base-table/index.js"
 }

@@ -241,7 +241,7 @@
   let tableIdSeed = 1;
 
   export default {
-    name: 'ElTable',
+    name: 'ElExtendBaseTable',
 
     mixins: [Locale, Migrating],
 

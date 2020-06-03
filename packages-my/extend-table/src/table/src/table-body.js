@@ -79,7 +79,7 @@ export default {
 
   computed: {
     table() {
-      if (this.$parent.$options.name === 'ElTable') {
+      if (this.$parent.$options.name === 'ElExtendBaseTable') {
         return this.$parent
       } else {
         return this.$parent.$parent;

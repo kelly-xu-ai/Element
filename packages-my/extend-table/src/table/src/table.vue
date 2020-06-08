@@ -33,7 +33,8 @@
         @change-column-list="$emit('change-column-list', $event)">
       </table-header>
     </div>
-    <el-scrollbar
+    <component
+      :is="scrollbar ? 'el-scrollbar' : 'div'"
       v-mousewheel="handleFixedMousewheel"
       class="el-table__body-wrapper"
       ref="bodyWrapper"
@@ -72,7 +73,7 @@
         ref="appendWrapper">
         <slot name="append"></slot>
       </div>
-    </el-scrollbar>
+    </component>
     <div
       v-if="showSummary"
       v-show="data && data.length > 0"
@@ -259,6 +260,10 @@
       column: {
         type: Array,
         default: () => []
+      },
+      scrollbar: {
+        type: Boolean,
+        default: true
       },
       columnDraggable: Boolean,
       rowDraggable: Boolean,
@@ -536,7 +541,7 @@
       },
 
       bodyWrapper() {
-        return this.$refs.bodyWrapper.$refs.wrap;
+        return this.$refs.bodyWrapper.$refs ? this.$refs.bodyWrapper.$refs.wrap : this.$refs.bodyWrapper;
       },
 
       shouldUpdateHeight() {

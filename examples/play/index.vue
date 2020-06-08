@@ -1,7 +1,7 @@
 <template>
   <div style="margin: 20px;">
-    <ElExtendBaseTable>
-    </ElExtendBaseTable>
+    <ElExtendTable :scrollbar="false" :data="data" :column="column">
+    </ElExtendTable>
   </div>
 </template>
 

@@ -22,13 +22,14 @@
       prop: 't1',
       label: 't1',
       minWidth: 130,
-      fixed: 'left'
+      fixed: true,
+      noDrag: true
     },
     {
       prop: 't2',
       label: 't2',
       minWidth: 130,
-      fixed: 'left'
+      fixed: true
     },
     {
       prop: 't3',

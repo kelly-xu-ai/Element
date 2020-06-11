@@ -144,6 +144,7 @@ export default {
                 ? <draggable
                   tag="tr"
                   group="el-table-header"
+                  filter=".el-extend-table .no-drag"
                   value={this.columnList}
                   on-change={evt => this.dragHandle(evt)}
                   on-end={evt => this.dragEnd(evt)}
@@ -247,12 +248,19 @@ export default {
     dragEnd({ item }) {
       item.classList.remove('drag-column-hidden')
     },
-    dragMove({ to, from, related, dragged }) {
+    dragMove({ to, from, dragged, relatedContext, draggedContext }) {
+      // 固定列和非固定列之间转换的样式修改
       if (to !== from) {
         dragged.classList.add('drag-column-hidden')
       } else {
         dragged.classList.remove('drag-column-hidden')
       }
+      // 处理不可拖拽列（checkbook列）
+      const relatedElement = relatedContext.element
+      const draggedElement = draggedContext.element
+      return (
+        (!relatedElement || !relatedElement.noDrag) && !draggedElement.noDrag
+      )
     },
     // 拖拽数据处理
     dragHandle({ added, moved }) {
@@ -349,6 +357,10 @@ export default {
           row,
           column
         }));
+      }
+
+      if (this.isDraggable && this.columnList[columnIndex].noDrag) {
+        classes.push('no-drag');
       }
 
       return classes.join(' ');

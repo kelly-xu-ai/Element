@@ -29,7 +29,6 @@
         }"
         :is-draggable="columnDraggable"
         :columnList="column"
-        :affix="affix"
         @change-column-list="$emit('change-column-list', $event)">
       </table-header>
     </div>
@@ -107,6 +106,9 @@
         <table-header
           ref="fixedTableHeader"
           fixed="left"
+          :is-draggable="columnDraggable"
+          :columnList="column"
+          @change-column-list="$emit('change-column-list', $event)"
           :border="border"
           :store="store"
           :style="{
@@ -168,6 +170,9 @@
         <table-header
           ref="rightFixedTableHeader"
           fixed="right"
+          :is-draggable="columnDraggable"
+          :columnList="column"
+          @change-column-list="$emit('change-column-list', $event)"
           :border="border"
           :store="store"
           :style="{
@@ -354,11 +359,7 @@
 
       lazy: Boolean,
 
-      load: Function,
-      affix: {
-        type: [Boolean, Object],
-        default: false
-      }
+      load: Function
     },
 
     components: {

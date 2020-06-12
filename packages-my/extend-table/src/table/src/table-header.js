@@ -6,32 +6,6 @@ import draggable from 'vuedraggable'
 import LayoutObserver from './layout-observer';
 import { mapStates } from './store/helper';
 
-const AffixTable = {
-  props: {
-    affix: {}
-  },
-  computed: {
-    isAffix() {
-      return !!this.affix
-    },
-    affixObject() {
-      return this.affix && typeof this.affix === 'object' ? this.affix : {}
-    }
-  },
-  render(h) {
-    const { $slots, affixObject, $attrs } = this
-    return (
-      this.isAffix
-        ? h(
-          'el-affix',
-          { props: { ...affixObject, tag: 'table', tagAttrs: $attrs } },
-          $slots.default
-        )
-        : <table attrs={this.$attrs}>{$slots.default}</table>
-    )
-  }
-}
-
 const getAllColumns = (columns) => {
   const result = [];
   columns.forEach((column) => {
@@ -140,8 +114,7 @@ export default {
       </div>
     </th>))
     return (
-      <AffixTable
-        affix={this.affix}
+      <table
         class="el-table__header"
         cellspacing="0"
         cellpadding="0"
@@ -170,8 +143,12 @@ export default {
               this.isDraggable
                 ? <draggable
                   tag="tr"
+                  group="el-table-header"
+                  filter=".el-extend-table .no-drag"
                   value={this.columnList}
-                  on-input={value => this.$emit('change-column-list', value)}
+                  on-change={evt => this.dragHandle(evt)}
+                  on-end={evt => this.dragEnd(evt)}
+                  move={evt => this.dragMove(evt)}
                   style={ this.getHeaderRowStyle(rowIndex) }
                   class={ this.getHeaderRowClass(rowIndex) }>
                   {
@@ -195,7 +172,7 @@ export default {
             )
           }
         </thead>
-      </AffixTable>
+      </table>
     );
   },
 
@@ -215,17 +192,12 @@ export default {
       }
     },
     columnList: Array,
-    isDraggable: Boolean,
-    affix: {
-      type: [Boolean, Object],
-      default: false
-    }
+    isDraggable: Boolean
   },
 
   components: {
     ElCheckbox,
-    draggable,
-    AffixTable
+    draggable
   },
 
   computed: {
@@ -271,6 +243,46 @@ export default {
   },
 
   methods: {
+    // extend 表头拖拽的处理
+    // 拖拽样式处理
+    dragEnd({ item }) {
+      item.classList.remove('drag-column-hidden')
+    },
+    dragMove({ to, from, dragged, relatedContext, draggedContext }) {
+      // 固定列和非固定列之间转换的样式修改
+      if (to !== from) {
+        dragged.classList.add('drag-column-hidden')
+      } else {
+        dragged.classList.remove('drag-column-hidden')
+      }
+      // 处理不可拖拽列（checkbook列）
+      const relatedElement = relatedContext.element
+      const draggedElement = draggedContext.element
+      return (
+        (!relatedElement || !relatedElement.noDrag) && !draggedElement.noDrag
+      )
+    },
+    // 拖拽数据处理
+    dragHandle({ added, moved }) {
+      if (moved) {
+        const { newIndex, element } = moved
+        const list = [...this.columnList]
+        const newPlace = this.columnList[newIndex]
+        const orgIndex = list.indexOf(newPlace)
+        list.splice(list.indexOf(element), 1)
+        list.splice(orgIndex, 0, element)
+        this.$emit('change-column-list', list)
+      } else if (added) {
+        const { newIndex, element } = added
+        const list = [...this.columnList]
+        const newPlace = this.columnList[newIndex]
+        const orgIndex = list.indexOf(newPlace)
+        const newElm = { ...element, fixed: this.fixed }
+        list.splice(orgIndex, 0, newElm)
+        list.splice(list.indexOf(element), 1)
+        this.$emit('change-column-list', list)
+      }
+    },
     isCellHidden(index, columns) {
       let start = 0;
       for (let i = 0; i < index; i++) {
@@ -345,6 +357,10 @@ export default {
           row,
           column
         }));
+      }
+
+      if (this.isDraggable && this.columnList[columnIndex] && this.columnList[columnIndex].noDrag) {
+        classes.push('no-drag');
       }
 
       return classes.join(' ');

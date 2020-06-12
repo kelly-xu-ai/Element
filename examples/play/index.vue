@@ -1,7 +1,28 @@
 <template>
   <div style="margin: 20px;">
-    <el-extend-table column-draggable border :data="data" :column.sync="column">
-    </el-extend-table>
+    <el-extend-base-table
+      class="el-extend-table"
+      column-draggable
+      border
+      :data="data"
+      :column="dcc"
+      @change-column-list="changeColumnList">
+      <el-table-column :no-drag="true" fixed="left" type="selection" width="55" />
+      <el-table-column
+        v-for="(item, columnIndex) in column"
+        :key="columnIndex"
+        v-bind="copyBinds(item)"
+        :label="item.label"
+      >
+        <template slot-scope="{ row, $index }">
+          <template>
+            <span :key="item.prop">
+              {{ item.format ? item.format({ index: $index, value: row[item.prop], row }) : row[item.prop] === undefined ? '' : row[item.prop] }}
+            </span>
+          </template>
+        </template>
+      </el-table-column>
+    </el-extend-base-table>
   </div>
 </template>
 
@@ -22,14 +43,13 @@
       prop: 't1',
       label: 't1',
       minWidth: 130,
-      fixed: true,
-      noDrag: true
+      fixed: 'left'
     },
     {
       prop: 't2',
       label: 't2',
       minWidth: 130,
-      fixed: true
+      fixed: 'left'
     },
     {
       prop: 't3',
@@ -63,23 +83,28 @@
     data() {
       return {
         data: tableData,
-        column: column
+        column: Object.freeze(column)
       }
     },
     computed: {
-      affix() {
-        return {
-          target: window
-        }
+      dcc() {
+        return [ { type: 'selection', fixed: 'left', noDrag: true }, ...this.column]
+        // return this.column
+      }
+    },
+    methods: {
+      changeColumnList(column) {
+        this.column = column.filter(item => item.type !== 'selection')
+      },
+      copyBinds(bind) {
+        const copy = {}
+        Object.keys(bind).forEach(key => {
+          if (!['prop', 'label', 'render', 'slot', 'format', 'editor', 'editable', 'rules'].includes(key)) {
+            copy[key] = bind[key]
+          }
+        })
+        return copy
       }
     }
   };
 </script>
-
-<style lang="scss" scoped>
-.el-extand-table {
-  .sortabled-chosen {
-    display: none;
-  }
-}
-</style>

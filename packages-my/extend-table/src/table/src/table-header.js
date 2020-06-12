@@ -359,7 +359,7 @@ export default {
         }));
       }
 
-      if (this.isDraggable && this.columnList[columnIndex].noDrag) {
+      if (this.isDraggable && this.columnList[columnIndex] && this.columnList[columnIndex].noDrag) {
         classes.push('no-drag');
       }
 

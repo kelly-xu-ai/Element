@@ -5,7 +5,6 @@
     ref="table"
     v-bind="$attrs"
     v-on="$listeners"
-    :affix="affix"
     :data="data"
     :column="column"
     :column-draggable="columnDraggable"
@@ -166,11 +165,7 @@ export default {
       })
     },
     columnDraggable: Boolean,
-    rowDraggable: Boolean,
-    affix: {
-      type: [Boolean, Object],
-      default: false
-    }
+    rowDraggable: Boolean
   },
   data() {
     return {

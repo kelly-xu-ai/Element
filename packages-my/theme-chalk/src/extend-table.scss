@@ -45,4 +45,11 @@
   .el-scrollbar__bar {
     z-index: 4;
   }
+  // 表格拖拽的样式修改
+  .drag-column-hidden {
+    display: none;
+  }
+  .drag-column-hidden + th {
+    border-left: 1px solid red;
+  }
 }

@@ -195,7 +195,9 @@
       },
 
       iconClass() {
-        return this.remote && this.filterable ? '' : (this.visible ? 'arrow-up is-reverse' : 'arrow-up');
+        // return this.remote && this.filterable ? '' : (this.visible ? 'arrow-up is-reverse' : 'arrow-up');
+        // 需要远程搜索的时候显示左侧上下箭头
+        return this.visible ? 'arrow-up is-reverse' : 'arrow-up';
       },
 
       debounce() {

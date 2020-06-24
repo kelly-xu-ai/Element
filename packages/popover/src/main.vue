@@ -94,7 +94,9 @@ export default {
     if (reference) {
       addClass(reference, 'el-popover__reference');
       reference.setAttribute('aria-describedby', this.tooltipId);
-      reference.setAttribute('tabindex', this.tabindex); // tab序列
+      if (this.tabindex >= 0) {
+        reference.setAttribute('tabindex', this.tabindex); // tab序列
+      }
       popper.setAttribute('tabindex', 0);
 
       if (this.trigger !== 'click') {

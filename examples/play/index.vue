@@ -1,6 +1,6 @@
 <template>
   <div style="margin: 20px;">
-    <el-extend-base-table
+    <!-- <el-extend-base-table
       class="el-extend-table"
       column-draggable
       border
@@ -22,7 +22,17 @@
           </template>
         </template>
       </el-table-column>
-    </el-extend-base-table>
+    </el-extend-base-table> -->
+    <el-popover
+      placement="top-start"
+      title="标题"
+      width="200"
+      trigger="click"
+      content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
+      <span slot="reference" class="advanced-search-shaixuan">
+        <span>高级搜索</span>
+      </span>
+    </el-popover>
   </div>
 </template>
 

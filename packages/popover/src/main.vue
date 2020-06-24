@@ -94,6 +94,7 @@ export default {
     if (reference) {
       addClass(reference, 'el-popover__reference');
       reference.setAttribute('aria-describedby', this.tooltipId);
+      // tabindex小于0直接不加属性（兼容Safari浏览器样式）
       if (this.tabindex >= 0) {
         reference.setAttribute('tabindex', this.tabindex); // tab序列
       }

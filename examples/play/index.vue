@@ -23,7 +23,7 @@
         </template>
       </el-table-column>
     </el-extend-base-table> -->
-    <el-popover
+    <!-- <el-popover
       placement="top-start"
       title="标题"
       width="200"
@@ -32,7 +32,20 @@
       <span slot="reference" class="advanced-search-shaixuan">
         <span>高级搜索</span>
       </span>
-    </el-popover>
+    </el-popover> -->
+
+    <el-dropdown :tabindex="-1">
+      <span class="el-dropdown-link">
+        下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
+      </span>
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item>黄金糕</el-dropdown-item>
+        <el-dropdown-item>狮子头</el-dropdown-item>
+        <el-dropdown-item>螺蛳粉</el-dropdown-item>
+        <el-dropdown-item disabled>双皮奶</el-dropdown-item>
+        <el-dropdown-item divided>蚵仔煎</el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
   </div>
 </template>
 

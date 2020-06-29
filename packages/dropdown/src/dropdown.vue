@@ -183,7 +183,9 @@
         ele.setAttribute('tabindex', '0'); // 下次期望的聚焦元素
       },
       removeTabindex() {
-        this.triggerElm.setAttribute('tabindex', '-1');
+        if (this.tabindex >= 0) {
+          this.triggerElm.setAttribute('tabindex', '-1');
+        }
         this.menuItemsArray.forEach((item) => {
           item.setAttribute('tabindex', '-1');
         });
@@ -195,7 +197,12 @@
 
         if (!this.splitButton) { // 自定义
           this.triggerElm.setAttribute('role', 'button');
-          this.triggerElm.setAttribute('tabindex', this.tabindex);
+          // tabindex小于0直接不加属性（兼容Safari浏览器样式）
+          if (this.tabindex >= 0) {
+            this.triggerElm.setAttribute('tabindex', this.tabindex);
+          } else {
+            this.triggerElm.removeAttribute('tabindex');
+          }
           this.triggerElm.setAttribute('class', (this.triggerElm.getAttribute('class') || '') + ' el-dropdown-selfdefine'); // 控制
         }
       },

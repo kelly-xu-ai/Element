@@ -694,7 +694,7 @@
           }
           if (this.filterable) this.$refs.input.focus();
         } else {
-          this.$emit('input', option.value);
+          this.$emit('input', option.value, option.label);
           this.emitChange(option.value);
           this.visible = false;
         }

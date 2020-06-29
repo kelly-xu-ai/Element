@@ -1,133 +1,135 @@
 <template>
   <div style="margin: 20px;">
-    <!-- <el-extend-base-table
-      class="el-extend-table"
-      column-draggable
-      border
-      :data="data"
-      :column="dcc"
-      @change-column-list="changeColumnList">
-      <el-table-column :no-drag="true" fixed="left" type="selection" width="55" />
-      <el-table-column
-        v-for="(item, columnIndex) in column"
-        :key="columnIndex"
-        v-bind="copyBinds(item)"
-        :label="item.label"
-      >
-        <template slot-scope="{ row, $index }">
-          <template>
-            <span :key="item.prop">
-              {{ item.format ? item.format({ index: $index, value: row[item.prop], row }) : row[item.prop] === undefined ? '' : row[item.prop] }}
-            </span>
-          </template>
-        </template>
-      </el-table-column>
-    </el-extend-base-table> -->
-    <!-- <el-popover
-      placement="top-start"
-      title="标题"
-      width="200"
-      trigger="click"
-      content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
-      <span slot="reference" class="advanced-search-shaixuan">
-        <span>高级搜索</span>
-      </span>
-    </el-popover> -->
-
-    <el-dropdown :tabindex="-1">
-      <span class="el-dropdown-link">
-        下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
-      </span>
-      <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item>黄金糕</el-dropdown-item>
-        <el-dropdown-item>狮子头</el-dropdown-item>
-        <el-dropdown-item>螺蛳粉</el-dropdown-item>
-        <el-dropdown-item disabled>双皮奶</el-dropdown-item>
-        <el-dropdown-item divided>蚵仔煎</el-dropdown-item>
-      </el-dropdown-menu>
-    </el-dropdown>
+    <el-extend-table :data="tableData" :column="column" trigger="hover" :scrollbar="false">
+      <template slot="remark" slot-scope="{ value }">
+        <span style="color: red">备注：{{value}}</span>
+      </template>
+    </el-extend-table>
+    <el-select v-model="value" clearable @input="inputHandle" placeholder="请选择">
+      <el-option label="1111111" value="1"></el-option>
+      <el-option label="2222222" value="2"></el-option>
+    </el-select>
   </div>
 </template>
 
 <script>
-  const tableData = Array.from({ length: 5 }).map((i, index) => {
-    return {
-      t1: 't1' + (index + 1),
-      t2: 't2' + (index + 1),
-      t3: 't3' + (index + 1),
-      t4: 't4' + (index + 1),
-      t5: 't5' + (index + 1),
-      t6: 't6' + (index + 1),
-      t7: 't7' + (index + 1)
-    }
-  })
-  const column = [
-    {
-      prop: 't1',
-      label: 't1',
-      minWidth: 130,
-      fixed: 'left'
-    },
-    {
-      prop: 't2',
-      label: 't2',
-      minWidth: 130,
-      fixed: 'left'
-    },
-    {
-      prop: 't3',
-      label: 't3',
-      minWidth: 130
-    },
-    {
-      prop: 't4',
-      label: 't4',
-      minWidth: 130
-    },
-    {
-      prop: 't5',
-      label: 't5',
-      minWidth: 130
-    },
-    {
-      prop: 't6',
-      label: 't6',
-      minWidth: 130,
-      fixed: 'right'
-    },
-    {
-      prop: 't7',
-      label: 't7',
-      minWidth: 130,
-      fixed: 'right'
-    },
-  ]
   export default {
+    methods: {
+      inputHandle(value, label) {
+        console.log(value, label)
+      }
+    },
     data() {
       return {
-        data: tableData,
-        column: Object.freeze(column)
-      }
-    },
-    computed: {
-      dcc() {
-        return [ { type: 'selection', fixed: 'left', noDrag: true }, ...this.column]
-        // return this.column
-      }
-    },
-    methods: {
-      changeColumnList(column) {
-        this.column = column.filter(item => item.type !== 'selection')
-      },
-      copyBinds(bind) {
-        const copy = {}
-        Object.keys(bind).forEach(key => {
-          if (!['prop', 'label', 'render', 'slot', 'format', 'editor', 'editable', 'rules'].includes(key)) {
-            copy[key] = bind[key]
+        value: '1',
+        tableData: [
+          {
+            name: '',
+            method: 1,
+            cost: 1000
+          },
+          {
+            name: '',
+            method: 2,
+            cost: 1000
+          },
+          {
+            name: '',
+            method: 3,
+            cost: 10000
           }
-        })
-        return copy
-      }
+        ],
+        column: [
+          {
+            label: '用户',
+            prop: 'name',
+            editor: {
+              component: 'el-date-picker',
+              appendToBody: false
+            }
+          },
+          {
+            label: '付费方式',
+            prop: 'method',
+            format({ value }) {
+              return ['', '按量付费', '按月付费', '按年付费'][value] || ''
+            },
+            editor: {
+              component: {
+                props: ['value', 'row'],
+                render(h) {
+                  return h(
+                    'el-select',
+                    {
+                      props: {
+                        value: this.value
+                      },
+                      on: {
+                        input: value => {
+                          this.row.cost = [0, 0, 1000, 10000][value]
+                          this.$emit('input', value)
+                        }
+                      }
+                    },
+                    [
+                      h('el-option', {props: {label: '按量付费', value: 1}}),
+                      h('el-option', {props: {label: '按月付费', value: 2}}),
+                      h('el-option', {props: {label: '按年付费', value: 3}})
+                    ]
+                  )
+                }
+              },
+              placeholder: '请选择付费方式'
+            }
+          },
+          {
+            label: '付费金额',
+            prop: 'cost',
+            format({ row, value }) {
+              if (row.method === 2) {
+                return `${value}$/月`
+              } else if (row.method === 3) {
+                return `${value}$/年`
+              } else {
+                return `${value}$`
+              }
+            },
+            editor({ row }) {
+              if (row.method === 1) {
+                return 'el-input-number'
+              } else {
+                return {
+                  component: {
+                    props: ['value', 'row'],
+                    render(h) {
+                      const opMap = [
+                        [], [],
+                        [['1000/月', 1000], ['2000/月', 2000], ['3000/月', 3000]],
+                        [['10000/年', 10000], ['20000/年', 20000], ['30000/年', 30000]]
+                      ]
+                      const option = opMap[this.row.method]
+                      return h(
+                        'el-select',
+                        {
+                          props: {
+                            value: this.value
+                          },
+                          on: {
+                            input: value => { this.$emit('input', value) }
+                          }
+                        },
+                        option.map(i => {
+                          return h('el-option', {props: {label: i[0], value: i[1]}})
+                        })
+                      )
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      };
     }
-  };
+  }
 </script>

@@ -778,7 +778,7 @@ table可以通过手动，悬浮，单机双击来触发编辑状态（默认单
             editor: {
               component: 'el-input',
               on: {
-                input: ({row, prop, index, oldValue }, $event) => {
+                input: ({data, row, prop, index, oldValue }, $event) => {
                   if (!/^[0-9]*$/.test($event)) {
                     row[prop] = oldValue
                   }
@@ -808,7 +808,7 @@ table可以通过手动，悬浮，单机双击来触发编辑状态（默认单
 ### Table Events
 | 事件名称 | 说明 | 回调参数 |
 |---------- |-------- |---------- |
-| change | 编辑值发生改变时触发 | { row, prop, index, value, oldValue, state, message } |
+| change | 编辑值发生改变时触发 | { data, row, prop, index, value, oldValue, state, message } |
 | 其他 | 参照el-table | 参照el-table |
 
 ### Table Methods

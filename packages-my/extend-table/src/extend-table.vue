@@ -252,10 +252,10 @@ export default {
       const changeEvent = {
         [event]: $value => {
           row[item.prop] = $value
-          this.$emit('change', {row, prop: item.prop, index, value: $value, oldValue: value, state, message})
+          this.$emit('change', {row, prop: item.prop, index, value: $value, oldValue: value, state, message, data: this.data})
         }
       }
-      const ons = getOns(item.editor, {row, prop: item.prop, index, oldValue: value})
+      const ons = getOns(item.editor, {row, prop: item.prop, index, oldValue: value, data: this.data})
       const validateEvents = this.getValidateEvents({ item, row, index, value})
       return mergeEvents(changeEvent, ons, validateEvents)
     },

@@ -56,6 +56,16 @@
           :state="state"
           :message="message"
           :isEdit="editRows.includes(row)"/>
+        <component
+          :is="item.component"
+          v-else-if="item.component"
+          :value="row[item.prop]"
+          :index="$index"
+          :row="row"
+          :state="state"
+          :message="message"
+          :isEdit="editRows.includes(row)"
+        />
         <template v-else>
           {{ item.format ? item.format({index: $index, value: row[item.prop], row, state, message}) : row[item.prop] === undefined ? '' : row[item.prop] }}
         </template>
@@ -201,7 +211,7 @@ export default {
     copyBinds(bind) {
       const copy = {}
       Object.keys(bind).forEach(key => {
-        if (!['prop', 'label', 'render', 'slot', 'format', 'editor', 'editable', 'rules'].includes(key)) {
+        if (!['prop', 'label', 'render', 'slot', 'format', 'editor', 'editable', 'rules', 'component'].includes(key)) {
           copy[key] = bind[key]
         }
       })

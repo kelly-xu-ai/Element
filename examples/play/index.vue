@@ -43,6 +43,15 @@
           {
             label: '用户',
             prop: 'name',
+            component: () => new Promise(resolve => {
+              setTimeout(() => {
+                resolve({
+                  render(h) {
+                    return h('div', ['test-promise'])
+                  }
+                })
+              }, 1000)
+            }),
             editor: {
               component: 'el-date-picker',
               appendToBody: false

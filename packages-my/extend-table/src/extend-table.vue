@@ -18,9 +18,9 @@
     @table-scroll="$emit('table-scroll', $event)"
     style="width: 100%">
     <slot name="prefix" />
-    <el-table-column v-if="checkable" fixed type="selection" width="55"></el-table-column>
+    <el-table-column v-if="checkable" fixed type="selection" min-width="55"></el-table-column>
     <el-table-column
-      v-for="(item, columnIndex) in column"
+      v-for="(item, columnIndex) in columnList"
       v-bind="copyBinds(item)"
       :key="columnIndex"
       :label="item.label"
@@ -187,6 +187,9 @@ export default {
       return [
         `el-extend-table-edit-${this.trigger}`
       ]
+    },
+    columnList() {
+      return this.column.filter(item => item && item.type !== 'selection')
     }
   },
   methods: {

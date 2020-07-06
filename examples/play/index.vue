@@ -1,6 +1,6 @@
 <template>
   <div style="margin: 20px;">
-    <el-extend-table :data="tableData" :column="column" trigger="hover" :scrollbar="false">
+    <el-extend-table border column-draggable :data="tableData" :column="column" trigger="click" :scrollbar="false">
       <template slot="remark" slot-scope="{ value }">
         <span style="color: red">备注：{{value}}</span>
       </template>
@@ -40,6 +40,7 @@
           }
         ],
         column: [
+          { prop: 'selection', type: 'selection', width: '55', fixed: 'left', noDrag: true },
           {
             label: '用户',
             prop: 'name',

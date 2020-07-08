@@ -261,14 +261,15 @@ export default {
       return events
     },
     getModelEvent({ item, row, index, value, state, message }) {
-      const event = getEvent(item.editor)
+      const editor = typeof item.editor === 'function' ? item.editor({ row, index, state, message }) : item.editor
+      const event = getEvent(editor)
       const changeEvent = {
         [event]: $value => {
           row[item.prop] = $value
           this.$emit('change', {row, prop: item.prop, index, value: $value, oldValue: value, state, message, data: this.data})
         }
       }
-      const ons = getOns(item.editor, {row, prop: item.prop, index, oldValue: value, data: this.data})
+      const ons = getOns(editor, {row, prop: item.prop, index, oldValue: value, data: this.data})
       const validateEvents = this.getValidateEvents({ item, row, index, value})
       return mergeEvents(changeEvent, ons, validateEvents)
     },
